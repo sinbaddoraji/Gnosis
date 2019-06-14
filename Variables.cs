@@ -6,7 +6,16 @@ using System.Threading.Tasks;
 
 namespace Gnosis
 {
+    class Value
+    {
+        public string type;
+        public dynamic value;
 
+        public Value(dynamic value)
+        {
+            this.value = value;
+        }
+    }
     class VariableHandler
     {
         Dictionary<string,Variable> variables = new Dictionary<string, Variable>();
@@ -17,15 +26,15 @@ namespace Gnosis
         }
         public void AddVariable(string name, string type, bool isArray)
         {
-            Variable newVariable = isArray ? new Variable(name,type) 
-                                           : new Array(name,type);
+            Variable newVariable = isArray ? new Variable(type) 
+                                           : new Array(type);
             variables.Add(name,newVariable);
         }
 
         public void AddVariable(string name, string type, int maxIndex)
         {
             // Add static array (Native Array)
-            variables.Add(name, new Array(name, type,maxIndex));
+            variables.Add(name, new Array(type,maxIndex));
         }
 
         public Variable GetVariable(string name,string type)
@@ -46,7 +55,7 @@ namespace Gnosis
 
         public VariableHandler()
         {
-            variables.Add("endl", new Variable("endl", "string"){ value = "\n" });
+            variables.Add("endl", new Variable("string"){ value = new Value("\n") });
         }
     }
       
@@ -57,14 +66,13 @@ namespace Gnosis
         string name;
         string type;
 
-        public object value;
+        public Value value;
 
         bool IsPrimitive() => primitiveTypes.Contains(name);
         public bool IsArray = false;
 
-        public Variable(string name, string type)
+        public Variable(string type)
         {
-            this.name = name;
             this.type = type;
         }
     }
@@ -75,12 +83,12 @@ namespace Gnosis
         //else it acts as a list
 
         public bool isStaticArray = false;
-        public Array(string name,string type) : base(name,type)
+        public Array(string type) : base(type)
         {
             IsArray = true;
         }
 
-        public Array(string name,string type,int maxLength) : this(name,type)
+        public Array(string type,int maxLength) : this(type)
         {
             isStaticArray = true;
         }

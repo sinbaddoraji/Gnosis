@@ -50,7 +50,7 @@ namespace Gnosis
                 else if (method.lexer.isVariable(token))
                 {
                     Variable variable = method.lexer.Variables.GetVariable(token);
-                    output += variable.value.ToString();
+                    output += variable.value.value.ToString();
                 }
                 else if(token != "<<")
                 {
