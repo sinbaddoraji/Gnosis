@@ -8,11 +8,12 @@ namespace Gnosis
 {
     class MethodHandler
     {
-        VariableHandler globalVariables;
+        VariableHandler variables;
         Method method; 
-        public void DeclearGlobalVariables(ref VariableHandler variableHandler)
+
+        public void DeclearVariables(ref VariableHandler variableHandler)
         { 
-            globalVariables = variableHandler;
+            variables = variableHandler;
         }
 
         public void DoFunction(Method method)
@@ -27,6 +28,7 @@ namespace Gnosis
         public void IntepreteCommand(Statement statement)
         {
             if(statement.tokens[0] == "print") Print(statement);
+            else if (statement.tokens[0] == "input") Input(statement);
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -56,11 +58,45 @@ namespace Gnosis
                 {
                     //Throw exception
                     //To be implemented
+                    return;
                 }
             }
 
             Console.Write(output);
 
+        }
+
+        void Input(Statement printStatement)
+        {
+            //input >> variable;
+            //input "Display string" >> variable;
+
+            string variableName;
+            string value;
+
+            if (printStatement.tokens.Count == 4)
+            {
+                //if input does not have display message
+                variableName = printStatement.tokens[2];
+            }
+            else if (printStatement.tokens.Count == 5)
+            {
+                //if input has a display message
+                string display = printStatement.tokens[1];
+                Console.Write(display.Substring(1, display.Length -2));
+
+                variableName = printStatement.tokens[3];
+            }
+            else
+            {
+                //Throw exception
+                //To be implemented
+                return;
+            }
+
+            value = Console.ReadLine();
+
+            variables.AddVariable(variableName,value);
         }
 
     }

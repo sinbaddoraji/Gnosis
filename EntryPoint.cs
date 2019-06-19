@@ -15,8 +15,10 @@ namespace Gnosis
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
             MethodHandler methodHandler = new MethodHandler(); // Create intepreter instance
+            VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
+            methodHandler.DeclearVariables(ref globalVariableHandler);
 
             if(mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main
