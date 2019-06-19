@@ -18,7 +18,7 @@ namespace Gnosis
             VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
-            methodHandler.DeclearVariables(ref globalVariableHandler);
+            methodHandler.DeclearGlobalVariables(ref globalVariableHandler);
 
             if(mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main

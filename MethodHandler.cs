@@ -8,12 +8,12 @@ namespace Gnosis
 {
     class MethodHandler
     {
-        VariableHandler variables;
+        VariableHandler globalVariables;
         Method method; 
 
-        public void DeclearVariables(ref VariableHandler variableHandler)
+        public void DeclearGlobalVariables(ref VariableHandler variableHandler)
         { 
-            variables = variableHandler;
+            globalVariables = variableHandler;
         }
 
         public void DoFunction(Method method)
@@ -21,14 +21,19 @@ namespace Gnosis
             this.method = method;
 
             //Run through every statement
-            foreach (var statement in this.method.lot)
-                IntepreteCommand(statement);
+            for (int i = 0; i < this.method.lot.Count; i++)
+            {
+                var statement = this.method.lot[i];
+                IntepreteCommand(ref statement);
+            }
+                
         }
 
-        public void IntepreteCommand(Statement statement)
+        public void IntepreteCommand(ref Statement statement)
         {
-            if(statement.tokens[0] == "print") Print(statement);
-            else if (statement.tokens[0] == "input") Input(statement);
+            if(statement.tokens[0] == "print") Print(ref statement);
+            else if (statement.tokens[0] == "input") Input(ref statement);
+            else if (statement.tokens[0] == "var") VarDeclaration(ref statement);
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -41,7 +46,7 @@ namespace Gnosis
             }
         }
 
-        void Print(Statement printStatement)
+        void Print(ref Statement printStatement)
         {
             string output = "";
 
@@ -52,6 +57,11 @@ namespace Gnosis
                 else if (method.lexer.isVariable(token))
                 {
                     Variable variable = method.lexer.Variables.GetVariable(token);
+                    output += variable.value.value.ToString();
+                }
+                else if (globalVariables.IsVariable(token))
+                {
+                    Variable variable = globalVariables.GetVariable(token);
                     output += variable.value.value.ToString();
                 }
                 else if(token != "<<")
@@ -66,7 +76,7 @@ namespace Gnosis
 
         }
 
-        void Input(Statement printStatement)
+        void Input(ref Statement printStatement)
         {
             //input >> variable;
             //input "Display string" >> variable;
@@ -96,37 +106,13 @@ namespace Gnosis
 
             value = Console.ReadLine();
 
-            variables.AddVariable(variableName,value);
+            globalVariables.AddVariable(variableName,value);
         }
 
-    }
-
-    class Method
-    {
-        public List<Statement> lot = new List<Statement>();
-        public Lexer lexer;
-        public Method(string code)
+        void VarDeclaration(ref Statement varStatement)
         {
-            lexer = new Lexer(code,false);
 
-            while(!lexer.Eof())
-            {
-                Statement nextStatement = lexer.NextStatement();
-                lot.Add(nextStatement);
-            }
         }
 
-    }
-
-    class Statement
-    {
-        public List<string> tokens = new List<string>();
-
-        bool isConditional = false; // Is a statement with {}
-
-        public Statement(List<string> statement)
-        {
-            tokens = statement;
-        }
     }
 }
