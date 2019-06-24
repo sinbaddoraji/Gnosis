@@ -11,16 +11,17 @@ namespace Gnosis
     {
         static void Main(string[] args)
         {
-            args = new[] { "HelloWorld.gno" };
+            args = new[] { "HelloString.gno" };
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
-            MethodHandler methodHandler = new MethodHandler(); // Create intepreter instance
             VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
-            methodHandler.DeclearGlobalVariables(ref globalVariableHandler);
 
-            if(mainMethod != null)
+            // Create intepreter instance
+            MethodHandler methodHandler = new MethodHandler(ref globalVariableHandler, ref mainMethod); 
+
+            if (mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main
               
         }

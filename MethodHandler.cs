@@ -9,12 +9,16 @@ namespace Gnosis
     class MethodHandler
     {
         VariableHandler globalVariables;
+        ValueHandler valueHanlder;
         Method method; 
 
-        public void DeclearGlobalVariables(ref VariableHandler variableHandler)
-        { 
+        public MethodHandler(ref VariableHandler variableHandler, ref Method m)
+        {
+            method = m;
             globalVariables = variableHandler;
+            valueHanlder = new ValueHandler(ref globalVariables, ref method);
         }
+
 
         public void DoFunction(Method method)
         {
@@ -111,7 +115,48 @@ namespace Gnosis
 
         void VarDeclaration(ref Statement varStatement)
         {
+            //Variable type will be based on the first variable in statement (tokens[3])
+            string variableName = varStatement.tokens[1];
+            int valueType = valueHanlder.ValueType(varStatement.tokens[3]);
+            //var value = blah + blah + blah
 
+            // value types : double, float, int, long, bool, string
+            // double -> 0
+            //  float -> 1
+            //    int -> 2
+            //   long -> 3
+            //   bool -> 4
+            // string -> 5
+            //  other -> 6;
+            dynamic value;
+            switch (valueType)
+            {
+                case 0:
+                    value = valueHanlder.ParseDoubleExpression(varStatement.tokens);
+                    break;
+                case 1:
+                    value = valueHanlder.ParseFloatExpression(varStatement.tokens);
+                    break;
+                case 2:
+                    value = valueHanlder.ParseIntExpression(varStatement.tokens);
+                    break;
+                case 3:
+                    value = valueHanlder.ParseLongExpression(varStatement.tokens);
+                    break;
+                case 4:
+                    value = null;
+                    //To be implemented (Bool)
+                    break;
+                case 5:
+                    value = valueHanlder.ParseStringExpression(varStatement.tokens);
+                    break;
+                default:
+                    //Throw exception
+                    //To be implemented
+                    return;
+            }
+
+            method.lexer.Variables.AddVariable(variableName,value,valueType);
         }
 
     }

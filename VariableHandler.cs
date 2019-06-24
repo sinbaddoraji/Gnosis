@@ -14,12 +14,14 @@ namespace Gnosis
 
         public static Value ProcessedValue(string value)
         {
-            // value types : double, float, int, bool, string
+            // value types : double, float, int, long, bool, string
             // double -> 0
             //  float -> 1
             //    int -> 2
-            //   bool -> 3
-            // string -> 4
+            //   long -> 3
+            //   bool -> 4
+            // string -> 5
+            //  other -> 6;
 
             //< 1 (false), > 0 (true)
 
@@ -28,8 +30,9 @@ namespace Gnosis
             if (Value.IsDouble(value)) val = new Value(double.Parse(value), 0);
             else if (Value.IsFloat(value)) val = new Value(float.Parse(value), 1);
             else if (Value.IsInt(value)) val = new Value(int.Parse(value), 2);
-            else if (Value.IsBool(value)) val = new Value(bool.Parse(value), 3);
-            else if (Value.IsString(value)) val = new Value(value.Substring(0, value.Length - 1), 4);
+            else if (Value.IsLong(value)) val = new Value(long.Parse(value), 3);
+            else if (Value.IsBool(value)) val = new Value(bool.Parse(value), 4);
+            else if (Value.IsString(value)) val = new Value(value.Substring(0, value.Length - 1), 5);
             else val = new Value(value);
 
             return val;
@@ -42,10 +45,8 @@ namespace Gnosis
             //To be implemented
         }
 
-        public void AddVariable(string name, string value)
+        private void AddVariable(string name, Variable v)
         {
-            var v = new Variable(ProcessedValue(value));
-
             //If variables contains variable with "name"
             //      edit the variable
             //else 
@@ -55,6 +56,18 @@ namespace Gnosis
                 variables[name] = v;
             else
                 variables.Add(name, v);
+        }
+
+        public void AddVariable(string name, string value)
+        {
+            var v = new Variable(ProcessedValue(value));
+            AddVariable(name,v);
+        }
+
+        public void AddVariable(string name, dynamic value, int valueType)
+        {
+            var v = new Variable(new Value(value, valueType));
+            AddVariable(name, v);
         }
 
         public Variable GetVariable(string name, string type)

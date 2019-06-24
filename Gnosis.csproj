@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MathEngine">
+      <HintPath>..\..\..\Documents\Visual Studio 2017\Projects\MathEngine\MathEngine\bin\Release\MathEngine.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,6 +53,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statement.cs" />
     <Compile Include="Value.cs" />
+    <Compile Include="ValueHandler.cs" />
     <Compile Include="VariableHandler.cs" />
     <Compile Include="Variable.cs" />
   </ItemGroup>

@@ -8,7 +8,25 @@ namespace Gnosis
 {
     class Variable
     {
-        string[] primitiveTypes = new[] { "string", "int", "double", "long", "float", "bool" };
+        private readonly string[] primitiveTypes = new[] { "string", "int", "double", "long", "float", "bool" };
+        // value types : double, float, int, long, bool, string
+        // double -> 0
+        //  float -> 1
+        //    int -> 2
+        //   long -> 3
+        //   bool -> 4
+        // string -> 5
+        //  other -> 6;
+
+        public int ValueType()
+        {
+            for (int i = 0; i < primitiveTypes.Length; i++)
+            {
+                if(value.type ==  primitiveTypes[i]) return i;
+            }
+
+            return 6;
+        }
 
         public Value value;
 
