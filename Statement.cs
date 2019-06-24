@@ -12,9 +12,11 @@ namespace Gnosis
 
         bool isConditional = false; // Is a statement with {}
 
-        public Statement(List<string> statement)
+        public Statement(List<string> statement, bool isConditional = false)
         {
             tokens = statement;
+            this.isConditional = isConditional;
         }
+
     }
 }

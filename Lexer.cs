@@ -147,24 +147,42 @@ namespace Gnosis
         {
             statementOutput = new List<string>();
 
+            bool bracket = false;
+            int bracketsOpened = 0;
+
             string cur = NextKeyword();
 
-            while (cur != ";" && cur != null)
+            while (true)
             {
                 if (cur.Trim() != "")
                 {
                     statementOutput.Add(cur);
                 }
 
+                if(cur == "{")
+                {
+                    bracket = true;
+                    bracketsOpened++;
+                }
+                else if (cur == "}")
+                {
+                    bracketsOpened--;
+                }
+
                 cur = NextKeyword();
 
                 if (cur == ";")
-                {
                     statementOutput.Add(";");
+                
+
+                if (bracket)
+                {
+                    if (bracketsOpened == 0) break;
                 }
+                else if (cur ==  ";" || cur == null) break;
             }
 
-            return new Statement(statementOutput.Where(x => x != "").ToList());
+            return new Statement(statementOutput.Where(x => x != "").ToList(), bracket);
         }
 
         private Dictionary<string, Method> ExtractMethods()
