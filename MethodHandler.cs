@@ -54,26 +54,18 @@ namespace Gnosis
         {
             string output = "";
 
-            for (int i = 1; i < printStatement.tokens.Count - 1; i++)
+            List<string> internalTokens = new List<string>();
+
+            for (int i = 1; i < printStatement.tokens.Count; i++)
             {
                 string token = printStatement.tokens[i];
-                if (Lexer.IsString(token)) output += token.Substring(1,token.Length - 2);
-                else if (method.lexer.isVariable(token))
+
+                if (token == "<<" || token == ";")
                 {
-                    Variable variable = method.lexer.Variables.GetVariable(token);
-                    output += variable.value.value.ToString();
+                    output += valueHanlder.ParseStringExpression(internalTokens, false);
+                    internalTokens.Clear();
                 }
-                else if (globalVariables.IsVariable(token))
-                {
-                    Variable variable = globalVariables.GetVariable(token);
-                    output += variable.value.value.ToString();
-                }
-                else if(token != "<<")
-                {
-                    //Throw exception
-                    //To be implemented
-                    return;
-                }
+                else internalTokens.Add(token);
             }
 
             Console.Write(output);

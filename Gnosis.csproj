@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Lexer.cs" />
+    <Compile Include="LogicHandler.cs" />
     <Compile Include="Method.cs" />
     <Compile Include="MethodHandler.cs" />
     <Compile Include="EntryPoint.cs" />

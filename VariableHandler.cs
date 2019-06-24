@@ -89,6 +89,8 @@ namespace Gnosis
         public VariableHandler()
         {
             variables.Add("endl", new Variable("\n", true));
+            variables.Add("true", new Variable(new Value(true)));
+            variables.Add("false", new Variable(new Value(false)));
         }
     }
 }
