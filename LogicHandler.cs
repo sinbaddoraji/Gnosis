@@ -75,12 +75,12 @@ namespace Gnosis
 
             for (int i = 1; i < values.Count; i++)
             {
-                if(values[i] == "&&" && i < values.Count - 2)
+                if(values[i] == "&&")
                 {
                     i++;
                     output &= bool.Parse(values[i]);
                 }
-                else if (values[i] == "||" && i < values.Count - 2)
+                else if (values[i] == "||")
                 {
                     i++;
                     output = output || bool.Parse(values[i]);
