@@ -8,6 +8,10 @@ namespace Gnosis
 {
     class Statement
     {
+        public Method internalMethod;
+        public MethodHandler internalMethodHandler;
+        public VariableHandler internalVariableHandler;
+
         public List<string> tokens = new List<string>();
 
         bool isConditional = false; // Is a statement with {}
@@ -16,6 +20,12 @@ namespace Gnosis
         {
             tokens = statement;
             this.isConditional = isConditional;
+
+        }
+
+        public void RunStatement()
+        {
+            internalMethodHandler.DoFunction(internalMethod);
         }
 
     }

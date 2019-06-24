@@ -13,6 +13,10 @@ namespace Gnosis
         private readonly int line = 0;
         private readonly int main = 0;
 
+        bool initialRun = true;
+
+        List<string> rawTokens;
+
         public List<string> currentTree = new List<string>();
         public List<List<string>> Trees = new List<List<string>>();
 
@@ -74,12 +78,26 @@ namespace Gnosis
 
         public bool Eof()
         {
-            return codeIndex >= code.Length;
+            if (initialRun == false && rawTokens != null)
+            {
+                return codeIndex >= rawTokens.Count;
+            }
+            else return codeIndex >= code.Length;
         }
 
         private string NextBit()
         {
-            string output = code[codeIndex].ToString();
+            string output;
+
+            if(initialRun == false && rawTokens != null)
+            {
+                output = rawTokens[codeIndex];
+                codeIndex++;
+
+                return output;
+            }
+
+            output = code[codeIndex].ToString();
             codeIndex++;
 
             if (codeIndex == code.Length)
@@ -229,8 +247,14 @@ namespace Gnosis
             {
                 Methods = ExtractMethods(); // Extract methods
             }
+            else initialRun = false;
         }
 
+        public Lexer(List<string> statement)
+        {
+            rawTokens = statement;
+            initialRun = false;
+        }
 
     }
 }

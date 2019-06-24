@@ -10,18 +10,28 @@ namespace Gnosis
     {
         public List<Statement> lot = new List<Statement>();
         public Lexer lexer;
-    //private method variables -> lexer.variables
+        //private method variables -> lexer.variables
 
-    public Method(string code)
-    {
-        lexer = new Lexer(code, false);
-
-        while (!lexer.Eof())
+        public Method(string code)
         {
-            Statement nextStatement = lexer.NextStatement();
-            lot.Add(nextStatement);
-        }
-    }
+            lexer = new Lexer(code, false);
 
-}
+            while (!lexer.Eof())
+            {
+                Statement nextStatement = lexer.NextStatement();
+                lot.Add(nextStatement);
+            }
+        }
+        public Method(List<string> statement)
+        {
+            lexer = new Lexer(statement);
+
+            while (!lexer.Eof())
+            {
+                Statement nextStatement = lexer.NextStatement();
+                lot.Add(nextStatement);
+            }
+        }
+
+    }
 }

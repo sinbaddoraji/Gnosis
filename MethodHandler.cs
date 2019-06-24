@@ -174,8 +174,21 @@ namespace Gnosis
             string[] boolTokens = new string[boolEnd - boolStart];
             ifStatement.tokens.CopyTo(boolStart,boolTokens,0, boolEnd - boolStart);
 
+            //Do statment or not
             bool doStatement = logicHandler.IntepreteBoolExpression(boolTokens);
-            Console.WriteLine(doStatement);
+
+
+            //Remove all tokens before starting of {
+            if(doStatement)
+            {
+                ifStatement.tokens.RemoveRange(0, i + 1);
+
+                ifStatement.internalMethod = new Method(ifStatement.tokens);
+                ifStatement.internalVariableHandler = new VariableHandler();
+                ifStatement.internalMethodHandler = new MethodHandler(ref ifStatement.internalVariableHandler, ref ifStatement.internalMethod);
+
+                ifStatement.RunStatement();
+            }
         }
 
     }
