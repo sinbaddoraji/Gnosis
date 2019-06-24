@@ -8,7 +8,7 @@ namespace Gnosis
 {
     class LogicHandler
     {
-        ValueHandler valueHanlder;
+        public ValueHandler valueHanlder;
         // (value == 34 || value == 15)
         //Operators:
         //  ! -> NOT
@@ -19,12 +19,6 @@ namespace Gnosis
 
 
         bool IsOperator(string op) => operators.Contains(op);
-
-        bool GetBoolEquivalent(string token)
-        {
-            if(token == "1") return true;
-            return false;
-        }
 
         string GetInvariantBool(string str)
         {
@@ -38,12 +32,12 @@ namespace Gnosis
             }
         }
 
-        bool IntepreteBoolExpression(List<string> tokens)
+        public bool IntepreteBoolExpression(string[] tokens)
         {
             List<string> values = new List<string>();
 
             //value == 15 && value == 16
-            for (int i = 0; i < tokens.Count; i++)
+            for (int i = 0; i < tokens.Length; i++)
             {
                var value = valueHanlder.GetValue(tokens[i]);
 
@@ -51,21 +45,18 @@ namespace Gnosis
                     tokens[i] = Convert.ToString(value);
                 else if (comparer.Contains(tokens[i]))
                 {
-                    if(i + 1 != tokens.Count - 1)
-                    {
-                        var nextValue = valueHanlder.GetValue(tokens[i + 1]);
-                        if (nextValue != null) tokens[i+1] = Convert.ToString(nextValue);
+                    var nextValue = valueHanlder.GetValue(tokens[i + 1]);
+                    if (nextValue != null) tokens[i + 1] = Convert.ToString(nextValue);
 
-                        if (tokens[i] == "==")
-                        {
-                            values.Add((tokens[i - 1] == tokens[i + 1]).ToString());
-                        }
-                        else if (tokens[i] == "!=")
-                        {
-                            values.Add((tokens[i - 1] != tokens[i + 1]).ToString());
-                        }
-                        i++; // Skip next comparison (no need)
+                    if (tokens[i] == "==")
+                    {
+                        values.Add((tokens[i - 1] == tokens[i + 1]).ToString());
                     }
+                    else if (tokens[i] == "!=")
+                    {
+                        values.Add((tokens[i - 1] != tokens[i + 1]).ToString());
+                    }
+                    i++; // Skip next comparison (no need)
                 }
                 else if (operators.Contains(tokens[i]))
                 {
@@ -80,7 +71,23 @@ namespace Gnosis
                 
             }
 
-            return false;
+            bool output = bool.Parse(values[0]);
+
+            for (int i = 1; i < values.Count; i++)
+            {
+                if(values[i] == "&&" && i < values.Count - 2)
+                {
+                    i++;
+                    output &= bool.Parse(values[i]);
+                }
+                else if (values[i] == "||" && i < values.Count - 2)
+                {
+                    i++;
+                    output = output || bool.Parse(values[i]);
+                }
+            }
+
+            return output;
         }
 
         public LogicHandler(ValueHandler vH)

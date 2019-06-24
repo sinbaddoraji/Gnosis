@@ -50,6 +50,8 @@ namespace Gnosis
 
         public static bool IsString(string str)
         {
+            if(str == null) return false;
+
             if (!str.StartsWith("\"") || !str.EndsWith("\""))
             {
                 return false;

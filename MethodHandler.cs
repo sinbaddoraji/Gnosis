@@ -9,6 +9,7 @@ namespace Gnosis
     class MethodHandler
     {
         VariableHandler globalVariables;
+        LogicHandler logicHandler;
         ValueHandler valueHanlder;
         Method method; 
 
@@ -17,6 +18,8 @@ namespace Gnosis
             method = m;
             globalVariables = variableHandler;
             valueHanlder = new ValueHandler(ref globalVariables, ref method);
+
+            logicHandler = new LogicHandler(valueHanlder);
         }
 
 
@@ -38,6 +41,7 @@ namespace Gnosis
             if(statement.tokens[0] == "print") Print(ref statement);
             else if (statement.tokens[0] == "input") Input(ref statement);
             else if (statement.tokens[0] == "var") VarDeclaration(ref statement);
+            else if (statement.tokens[0] == "if") IfStatement(ref statement);
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -149,6 +153,29 @@ namespace Gnosis
             }
 
             method.lexer.Variables.AddVariable(variableName,value,valueType);
+        }
+
+        void IfStatement(ref Statement ifStatement)
+        {
+            //if (value == 15 && value == 16)
+            int boolStart = 2, boolEnd = 2;
+            int i;
+
+            for (i = 1; i < ifStatement.tokens.Count; i++)
+            {
+                if(ifStatement.tokens[i] == ")")
+                {
+                    boolEnd = i;
+                    i++;
+                    break;
+                }
+            }
+
+            string[] boolTokens = new string[boolEnd - boolStart];
+            ifStatement.tokens.CopyTo(boolStart,boolTokens,0, boolEnd - boolStart);
+
+            bool doStatement = logicHandler.IntepreteBoolExpression(boolTokens);
+            Console.WriteLine(doStatement);
         }
 
     }
