@@ -89,6 +89,8 @@ namespace Gnosis
         {
             string output;
 
+            if(Eof()) return "";
+
             if(initialRun == false && rawTokens != null)
             {
                 output = rawTokens[codeIndex];
@@ -138,6 +140,8 @@ namespace Gnosis
 
             while (true)
             {
+                if(Eof()) return null;
+
                 string next = NextBit();
 
                 if (IsSymbol(next))
@@ -165,6 +169,8 @@ namespace Gnosis
         private List<string> statementOutput;
         public Statement NextStatement()
         {
+            //Do not add ; after } in token list
+            // }; is used in code to make lexer find it as a statement (regular design)
             statementOutput = new List<string>();
 
             bool bracket = false;
@@ -174,6 +180,8 @@ namespace Gnosis
 
             while (true)
             {
+                if (Eof()) break;
+
                 if (cur != "")
                 {
                     statementOutput.Add(cur);

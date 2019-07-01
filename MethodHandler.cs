@@ -38,7 +38,8 @@ namespace Gnosis
 
         public void IntepreteCommand(ref Statement statement)
         {
-            if(statement.tokens[0] == "print") Print(ref statement);
+            if(statement.tokens.Count == 0) return;
+            else if(statement.tokens[0] == "print") Print(ref statement);
             else if (statement.tokens[0] == "input") Input(ref statement);
             else if (statement.tokens[0] == "var") VarDeclaration(ref statement);
             else if (statement.tokens[0] == "if") IfStatement(ref statement);
