@@ -13,10 +13,10 @@ namespace Gnosis
         ValueHandler valueHanlder;
         Method method; 
 
-        public MethodHandler(ref VariableHandler variableHandler, ref Method m)
+        public MethodHandler(ref VariableHandler globalVars, ref Method m)
         {
             method = m;
-            globalVariables = variableHandler;
+            globalVariables = globalVars;
             valueHanlder = new ValueHandler(ref globalVariables, ref method);
 
             logicHandler = new LogicHandler(valueHanlder);
@@ -185,7 +185,7 @@ namespace Gnosis
 
                 ifStatement.internalMethod = new Method(ifStatement.tokens);
                 ifStatement.internalVariableHandler = new VariableHandler();
-                ifStatement.internalMethodHandler = new MethodHandler(ref ifStatement.internalVariableHandler, ref ifStatement.internalMethod);
+                ifStatement.internalMethodHandler = new MethodHandler(ref globalVariables, ref ifStatement.internalMethod);
 
                 ifStatement.RunStatement();
             }

@@ -174,7 +174,7 @@ namespace Gnosis
 
             while (true)
             {
-                if (cur.Trim() != "")
+                if (cur != "")
                 {
                     statementOutput.Add(cur);
                 }
@@ -191,15 +191,17 @@ namespace Gnosis
 
                 cur = NextKeyword();
 
-                if (cur == ";")
-                    statementOutput.Add(";");
-                
-
                 if (bracket)
                 {
                     if (bracketsOpened == 0) break;
                 }
-                else if (cur ==  ";" || cur == null) break;
+                else if (cur ==  ";" || cur == null)
+                {
+                    if (cur == ";")
+                        statementOutput.Add(";");
+
+                    break;
+                }
             }
 
             return new Statement(statementOutput.Where(x => x != "").ToList(), bracket);

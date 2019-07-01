@@ -7,11 +7,12 @@ using System.IO;
 
 namespace Gnosis
 {
+
     class EntryPoint
     {
         static void Main(string[] args)
         {
-            args = new[] { "HelloIf.gno" };
+            args = new[] { "Calculator1.gno" };
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
             VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
