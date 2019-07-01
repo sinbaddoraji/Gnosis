@@ -34,6 +34,13 @@ namespace Gnosis
 
         public bool IntepreteBoolExpression(string[] tokens)
         {
+            if(tokens.Length == 1)
+            {
+                var value = valueHanlder.GetValue(tokens[0]);
+
+                return bool.Parse(value);
+            }
+
             List<string> values = new List<string>();
 
             //value == 15 && value == 16

@@ -10,9 +10,10 @@ namespace Gnosis
     class ValueHandler
     {
         //This class handles variables and raw values for the method handler
-        MathEngine mathEngine = new MathEngine();
-        VariableHandler globalVariables;
-        Method method;
+        private MathEngine mathEngine = new MathEngine();
+        private VariableHandler globalVariables;
+        public LogicHandler logicHandler;
+        private Method method;
 
         public int ValueType(string value)
         {
@@ -113,29 +114,20 @@ namespace Gnosis
             //var value = blah + blah + blah
         }
 
-        public string ParseBoolExpression(List<string> tokens)
+        public string ParseBoolExpression(List<string> tokens, bool inStatement = false)
         {
-            tokens.RemoveRange(0, 3);
-            tokens.RemoveAt(tokens.Count - 1);
-
-            string output = "";
-
-            for (int i = 0; i < tokens.Count; i++)
+            if(inStatement)
             {
-                var next = GetValue(tokens[i]);
-
-                if (next == null)
-                {
-                    //Throw exception
-                    //To be implemented
-                }
-                else
-                {
-                    output += GetValue(tokens[i]);
-                }
+                tokens.RemoveRange(0, 4);
+                tokens.RemoveRange(tokens.Count - 2,2);
+            }
+            else
+            {
+                tokens.RemoveRange(0, 3);
+                tokens.RemoveAt(tokens.Count - 1);
             }
 
-            return output;
+            return logicHandler.IntepreteBoolExpression(tokens.ToArray()).ToString();
             //var value = blah + blah + blah
         }
 

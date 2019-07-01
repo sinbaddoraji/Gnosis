@@ -17,9 +17,11 @@ namespace Gnosis
         {
             method = m;
             globalVariables = globalVars;
-            valueHanlder = new ValueHandler(ref globalVariables, ref method);
 
+            valueHanlder = new ValueHandler(ref globalVariables, ref method);
             logicHandler = new LogicHandler(valueHanlder);
+
+            valueHanlder.logicHandler = logicHandler;
         }
 
 
@@ -115,6 +117,23 @@ namespace Gnosis
             //Variable type will be based on the first variable in statement (tokens[3])
             string variableName = varStatement.tokens[1];
             int valueType = valueHanlder.ValueType(varStatement.tokens[3]);
+
+            //if given "other" value type.. find out if is actually numeical or boolean value
+            if(valueType == 6)
+            {
+                if(varStatement.tokens.Contains("!=")) valueType = 4;
+                else if (varStatement.tokens.Contains("==")) valueType = 4;
+                else if(varStatement.tokens[3] == "(")
+                {
+                    //Assume that value is numerical "double"
+                    valueType = 0;
+                }
+                else
+                {
+                    //To be implemented
+                    //Methods with return statements
+                }
+            }
             //var value = blah + blah + blah
 
             // value types : double, float, int, long, bool, string
@@ -141,7 +160,7 @@ namespace Gnosis
                     value = valueHanlder.ParseLongExpression(varStatement.tokens);
                     break;
                 case 4:
-                    value = null;
+                    value = valueHanlder.ParseBoolExpression(varStatement.tokens,true);
                     //To be implemented (Bool)
                     break;
                 case 5:
