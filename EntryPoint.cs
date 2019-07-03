@@ -12,7 +12,10 @@ namespace Gnosis
     {
         static void Main(string[] args)
         {
-            args = new[] { "Calculator2.gno" };
+           // args = new[] { "Calculator2.gno" };
+
+            if(args.Length == 0)
+                return; //exit program if no arguments
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
             VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
