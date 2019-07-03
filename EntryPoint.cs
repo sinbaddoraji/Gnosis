@@ -19,6 +19,9 @@ namespace Gnosis
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
 
+            //Make public and private variableHandler for "main" the same 
+            lexer.MainMethod().lexer.Variables = globalVariableHandler; 
+
             // Create intepreter instance
             MethodHandler methodHandler = new MethodHandler(ref globalVariableHandler, ref mainMethod); 
 

@@ -20,7 +20,6 @@ namespace Gnosis
         {
             tokens = statement;
             this.isConditional = isConditional;
-
         }
 
         public void RunStatement()
