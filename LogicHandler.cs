@@ -15,7 +15,7 @@ namespace Gnosis
         // && -> AND
         // || -> OR
         string[] operators = new[] { "!", "&&", "||" }; // there may be more in the future
-        string[] comparer = new[] { "==", "!=" }; // there may be more in the future
+        string[] comparer = new[] { "==", "!=", "<", ">", "<=", ">=" }; // there may be more in the future
 
 
         bool IsOperator(string op) => operators.Contains(op);
@@ -62,6 +62,38 @@ namespace Gnosis
                     else if (tokens[i] == "!=")
                     {
                         values.Add((tokens[i - 1] != tokens[i + 1]).ToString());
+                    }
+                    else if (tokens[i] == "<")
+                    {
+                        //Compare as doubles
+                        value = double.Parse(tokens[i -1]);
+                        nextValue = double.Parse(tokens[i + 1]);
+
+                        values.Add((value < nextValue).ToString());
+                    }
+                    else if (tokens[i] == ">")
+                    {
+                        //Compare as doubles
+                        value = double.Parse(tokens[i - 1]);
+                        nextValue = double.Parse(tokens[i + 1]);
+
+                        values.Add((value > nextValue).ToString());
+                    }
+                    else if (tokens[i] == "<=")
+                    {
+                        //Compare as doubles
+                        value = double.Parse(tokens[i - 1]);
+                        nextValue = double.Parse(tokens[i + 1]);
+
+                        values.Add((value <= nextValue).ToString());
+                    }
+                    else if (tokens[i] == ">=")
+                    {
+                        //Compare as doubles
+                        value = double.Parse(tokens[i - 1]);
+                        nextValue = double.Parse(tokens[i + 1]);
+
+                        values.Add((value >= nextValue).ToString());
                     }
                     i++; // Skip next comparison (no need)
                 }

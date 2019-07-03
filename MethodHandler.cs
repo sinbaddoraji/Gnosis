@@ -45,6 +45,7 @@ namespace Gnosis
             else if (statement.tokens[0] == "input") Input(ref statement);
             else if (statement.tokens[0] == "var") VarDeclaration(ref statement);
             else if (statement.tokens[0] == "if") IfStatement(ref statement);
+            else if (statement.tokens[0] == "while") WhileLoopStatement(statement);
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -172,18 +173,28 @@ namespace Gnosis
                     return;
             }
 
-            method.lexer.Variables.AddVariable(variableName,value,valueType);
+            
+            if (globalVariables.IsVariable(variableName))
+            {
+                globalVariables.AddVariable(variableName,value,valueType);
+            }
+            else
+            {
+                method.lexer.Variables.AddVariable(variableName, value, valueType);
+            }
+
+            
         }
 
-        void IfStatement(ref Statement ifStatement)
+        void PrepareConditionalStatement(ref Statement statement,out string[] boolTokens, out int i)
         {
             //if (value == 15 && value == 16)
             int boolStart = 2, boolEnd = 2;
-            int i;
 
-            for (i = 1; i < ifStatement.tokens.Count; i++)
+            
+            for (i = 1; i < statement.tokens.Count; i++)
             {
-                if(ifStatement.tokens[i] == ")")
+                if (statement.tokens[i] == ")")
                 {
                     boolEnd = i;
                     i++;
@@ -191,16 +202,19 @@ namespace Gnosis
                 }
             }
 
-            string[] boolTokens = new string[boolEnd - boolStart];
-            ifStatement.tokens.CopyTo(boolStart,boolTokens,0, boolEnd - boolStart);
+            boolTokens = new string[boolEnd - boolStart];
+            statement.tokens.CopyTo(boolStart, boolTokens, 0, boolEnd - boolStart);
+        }
 
-            //Do statment or not
-            bool doStatement = logicHandler.IntepreteBoolExpression(boolTokens);
+        void IfStatement(ref Statement ifStatement)
+        {
+            //i -> index of {
 
+            PrepareConditionalStatement(ref ifStatement, out string[] boolTokens, out int i);
 
-            //Remove all tokens before starting of {
-            if(doStatement)
+            if (logicHandler.IntepreteBoolExpression(boolTokens))
             {
+                //Remove all tokens before starting of {
                 ifStatement.tokens.RemoveRange(0, i + 1);
 
                 ifStatement.internalMethod = new Method(ifStatement.tokens);
@@ -208,6 +222,26 @@ namespace Gnosis
                 ifStatement.internalMethodHandler = new MethodHandler(ref globalVariables, ref ifStatement.internalMethod);
 
                 ifStatement.RunStatement();
+            }
+        }
+
+        void WhileLoopStatement(Statement whileLoopStatement)
+        {
+            //i -> index of {
+
+            PrepareConditionalStatement(ref whileLoopStatement, out string[] boolTokens, out int i);
+
+            //Remove all tokens before starting of {
+            whileLoopStatement.tokens.RemoveRange(0, i + 1);
+            whileLoopStatement.internalVariableHandler = new VariableHandler();
+
+            whileLoopStatement.internalMethod = new Method(whileLoopStatement.tokens);
+
+            whileLoopStatement.internalMethodHandler = new MethodHandler(ref globalVariables, ref whileLoopStatement.internalMethod);
+
+            while (logicHandler.IntepreteBoolExpression(boolTokens))
+            {
+                whileLoopStatement.RunStatement();
             }
         }
 

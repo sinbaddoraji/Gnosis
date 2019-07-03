@@ -15,6 +15,11 @@ namespace Gnosis
         public LogicHandler logicHandler;
         private Method method;
 
+        public bool IsVariable(string value)
+        {
+            return method.lexer.isVariable(value) || globalVariables.IsVariable(value);
+        }
+
         public int ValueType(string value)
         {
             //Find out if checking variable

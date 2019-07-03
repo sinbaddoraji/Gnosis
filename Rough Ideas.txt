@@ -1,0 +1,23 @@
+methods won't specify the parameters
+eg:
+	call(name="sam",skill=true)
+The method call will be initalized using those variables and values
+
+method return is always dynamic
+
+value type will always be unspecified. Use of "var" keyword
+
+var dada = kik();
+ what ever kik can return anything
+
+booleans do not allow ((a == b) || (b == c))
+Correct syntax: (a == b || b == c)
+
+put boolean expressions in variables if it is to be sepretated carefully
+
+for loop will be translated into a while loop in the intepreter.. 
+ (var i = 0; i < 2; i++) 
+
+the first command will be run
+the second will be the condition
+and the third will be run after every cycle

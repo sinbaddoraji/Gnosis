@@ -70,6 +70,7 @@ namespace Gnosis
             AddVariable(name, v);
         }
 
+
         public Variable GetVariable(string name, string type)
         {
             return null; //To be implemented
