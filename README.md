@@ -32,28 +32,44 @@ Basic Keywords:
 	if      case    let
 
 
+
+The following are example cases on the use of the stated tokens
+
 print:
-	print << value;
+	<main>
+		print << str << endl;
+        </main>
 
 input:
-	input >> variable;
-	input "Display string" >> variable;
+	<main>
+		input >> variable;
+		input "Display string" >> variable;
+        </main>
+	
 
 var:
-	var name = value;
-	var name = value + valueMethod();
+	<main>
+		var name = value;
+		var name = value + valueMethod();
+        </main>
+	
 
 string:
-Escape Characters:
+	Escape Characters:
 
-\a	Bell or alert
-\b	Backspace
-\f	Formfeed
-\n	Newline
-\r	Carriage return
-\t	Tab
-\v	Vertical tab
+	\a	Bell or alert
+	\b	Backspace
+	\f	Formfeed
+	\n	Newline
+	\r	Carriage return
+	\t	Tab
+	\v	Vertical tab
 	
+	Strings are to be placed in-between double quotes. Example: "This is a string"
+	
+	<main>
+		var str = "\nHello strings work too " + value2 + " Not in a strict way either";
+	</main>
 	
 operators:
 	  "+", "-","*", "/", "=", ">", "<", "!", "%", "[", "]", "{", "}", "(", ")", ",", ";"
