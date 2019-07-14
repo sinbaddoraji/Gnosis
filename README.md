@@ -53,6 +53,12 @@ var:
 		var name = value + valueMethod();
         </main>
 	
+short hand code like += -= *= /= %=
+
+	<main>
+		var name = value;
+		var name += value + valueMethod();
+        </main>
 
 string:
 	Escape Characters:
