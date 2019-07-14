@@ -13,7 +13,7 @@ namespace Gnosis
         ValueHandler valueHanlder;
         Method method; 
 
-        public MethodHandler(ref VariableHandler globalVars, ref Method m)
+        public MethodHandler(VariableHandler globalVars,  Method m)
         {
             method = m;
             globalVariables = globalVars;
@@ -117,17 +117,17 @@ namespace Gnosis
         {
             //Variable type will be based on the first variable in statement (tokens[3])
             string variableName = varStatement.tokens[1];
-            int valueType = valueHanlder.ValueType(varStatement.tokens[3]);
+            var valueType = valueHanlder.ValueType(varStatement.tokens[3]);
 
             //if given "other" value type.. find out if is actually numeical or boolean value
-            if(valueType == 6)
+            if(valueType == Value.Value_Type.Other)
             {
-                if(varStatement.tokens.Contains("!=")) valueType = 4;
-                else if (varStatement.tokens.Contains("==")) valueType = 4;
+                if(varStatement.tokens.Contains("!=")) valueType = Value.Value_Type.Bool;
+                else if (varStatement.tokens.Contains("==")) valueType = Value.Value_Type.Bool;
                 else if(varStatement.tokens[3] == "(")
                 {
                     //Assume that value is numerical "double"
-                    valueType = 0;
+                    valueType = Value.Value_Type.Double;
                 }
                 else
                 {
@@ -137,35 +137,32 @@ namespace Gnosis
             }
             //var value = blah + blah + blah
 
-            // value types : double, float, int, long, bool, string
-            // double -> 0
-            //  float -> 1
-            //    int -> 2
-            //   long -> 3
-            //   bool -> 4
-            // string -> 5
-            //  other -> 6;
             dynamic value;
             switch (valueType)
             {
-                case 0:
+                case Value.Value_Type.Double:
                     value = valueHanlder.ParseDoubleExpression(varStatement.tokens);
                     break;
-                case 1:
+                case Value.Value_Type.Float:
                     value = valueHanlder.ParseFloatExpression(varStatement.tokens);
                     break;
-                case 2:
+                case Value.Value_Type.Int:
                     value = valueHanlder.ParseIntExpression(varStatement.tokens);
                     break;
-                case 3:
+                case Value.Value_Type.Long:
                     value = valueHanlder.ParseLongExpression(varStatement.tokens);
                     break;
-                case 4:
+                case Value.Value_Type.Bool:
                     value = valueHanlder.ParseBoolExpression(varStatement.tokens,true);
                     //To be implemented (Bool)
                     break;
-                case 5:
+                case Value.Value_Type.String:
                     value = valueHanlder.ParseStringExpression(varStatement.tokens);
+                    break;
+                case Value.Value_Type.Other:
+                    //Throw exception
+                    //To be implemented
+                    value = null;
                     break;
                 default:
                     //Throw exception
@@ -219,7 +216,7 @@ namespace Gnosis
 
                 ifStatement.internalMethod = new Method(ifStatement.tokens);
                 ifStatement.internalVariableHandler = new VariableHandler();
-                ifStatement.internalMethodHandler = new MethodHandler(ref globalVariables, ref ifStatement.internalMethod);
+                ifStatement.internalMethodHandler = new MethodHandler(globalVariables, ifStatement.internalMethod);
 
                 ifStatement.RunStatement();
             }
@@ -237,7 +234,9 @@ namespace Gnosis
 
             whileLoopStatement.internalMethod = new Method(whileLoopStatement.tokens);
 
-            whileLoopStatement.internalMethodHandler = new MethodHandler(ref globalVariables, ref whileLoopStatement.internalMethod);
+            whileLoopStatement.internalMethodHandler = new MethodHandler(globalVariables, whileLoopStatement.internalMethod);
+
+            var doFunc = boolTokens;
 
             while (logicHandler.IntepreteBoolExpression(boolTokens))
             {

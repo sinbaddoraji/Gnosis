@@ -8,29 +8,11 @@ namespace Gnosis
 {
     class Variable
     {
-        private readonly string[] primitiveTypes = new[] { "string", "int", "double", "long", "float", "bool" };
-        // value types : double, float, int, long, bool, string
-        // double -> 0
-        //  float -> 1
-        //    int -> 2
-        //   long -> 3
-        //   bool -> 4
-        // string -> 5
-        //  other -> 6;
 
-        public int ValueType()
-        {
-            for (int i = 0; i < primitiveTypes.Length; i++)
-            {
-                if(value.type ==  primitiveTypes[i]) return i;
-            }
-
-            return 6;
-        }
+        public Value.Value_Type ValueType() => value.type;
 
         public Value value;
 
-        bool IsPrimitive() => primitiveTypes.Contains(value.type);
         public bool IsArray = false;
 
         public Variable(Value value)
@@ -40,7 +22,7 @@ namespace Gnosis
 
         public Variable(string value, bool rawString = false)
         {
-            this.value = rawString ? new Value(value,4) 
+            this.value = rawString ? new Value(value,Value.Value_Type.String) 
                 : VariableHandler.ProcessedValue(value);
         }
 

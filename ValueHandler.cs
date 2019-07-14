@@ -20,7 +20,7 @@ namespace Gnosis
             return method.lexer.isVariable(value) || globalVariables.IsVariable(value);
         }
 
-        public int ValueType(string value)
+        public Value.Value_Type ValueType(string value)
         {
             //Find out if checking variable
             //if checking variable return variable value type

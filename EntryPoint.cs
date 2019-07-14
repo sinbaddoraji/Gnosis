@@ -26,7 +26,7 @@ namespace Gnosis
             lexer.MainMethod().lexer.Variables = globalVariableHandler; 
 
             // Create intepreter instance
-            MethodHandler methodHandler = new MethodHandler(ref globalVariableHandler, ref mainMethod); 
+            MethodHandler methodHandler = new MethodHandler(globalVariableHandler, mainMethod); 
 
             if (mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main

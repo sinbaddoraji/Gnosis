@@ -8,11 +8,10 @@ namespace Gnosis
 {
     class Value
     {
-        public string type;
+        public Value_Type type;
         public dynamic value;
 
-        private readonly string[] vType = new[] { "double", "float", "int", "long", "bool", "string" };
-        
+        public enum Value_Type { Double, Float, Int, Long, Bool, String, Other };
 
         public static bool IsDouble(string val) => double.TryParse(val, out double d);
 
@@ -32,36 +31,27 @@ namespace Gnosis
         }
 
 
-        public static int ValueType(string val)
+        public static Value_Type ValueType(string val)
         {
-            if (IsDouble(val)) return 0;
-            else if (IsFloat(val)) return 1;
-            else if (IsInt(val)) return 2;
-            else if (IsLong(val)) return 3;
-            else if (IsBool(val)) return 4;
-            else if (IsString(val)) return 5;
-            else return 6; //Other (Array?)
+            if (IsDouble(val)) return Value_Type.Double;
+            else if (IsFloat(val)) return Value_Type.Float;
+            else if (IsInt(val)) return Value_Type.Int;
+            else if (IsLong(val)) return Value_Type.Long;
+            else if (IsBool(val)) return Value_Type.Bool;
+            else if (IsString(val)) return Value_Type.String;
+            else return Value_Type.Other; //Other (Array?)
         }
 
-
-        // value types : double, float, int, long, bool, string
-        // double -> 0
-        //  float -> 1
-        //    int -> 2
-        //   long -> 3
-        //   bool -> 4
-        // string -> 5
-        //  other -> 6;
 
         public Value(dynamic value)
         {
             this.value = value;
         }
 
-        public Value(dynamic value, int valueType)
+        public Value(dynamic value, Value_Type valueType)
         {
             this.value = value;
-            type = vType[valueType];
+            type = valueType;
         }
 
     }

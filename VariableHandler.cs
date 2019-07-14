@@ -14,25 +14,16 @@ namespace Gnosis
 
         public static Value ProcessedValue(string value)
         {
-            // value types : double, float, int, long, bool, string
-            // double -> 0
-            //  float -> 1
-            //    int -> 2
-            //   long -> 3
-            //   bool -> 4
-            // string -> 5
-            //  other -> 6;
-
             //< 1 (false), > 0 (true)
 
             Value val;
 
-            if (Value.IsDouble(value)) val = new Value(double.Parse(value), 0);
-            else if (Value.IsFloat(value)) val = new Value(float.Parse(value), 1);
-            else if (Value.IsInt(value)) val = new Value(int.Parse(value), 2);
-            else if (Value.IsLong(value)) val = new Value(long.Parse(value), 3);
-            else if (Value.IsBool(value)) val = new Value(bool.Parse(value), 4);
-            else if (Value.IsString(value)) val = new Value(value.Substring(0, value.Length - 1), 5);
+            if (Value.IsDouble(value)) val = new Value(double.Parse(value), Value.Value_Type.Double);
+            else if (Value.IsFloat(value)) val = new Value(float.Parse(value), Value.Value_Type.Float);
+            else if (Value.IsInt(value)) val = new Value(int.Parse(value), Value.Value_Type.Int);
+            else if (Value.IsLong(value)) val = new Value(long.Parse(value), Value.Value_Type.Long);
+            else if (Value.IsBool(value)) val = new Value(bool.Parse(value), Value.Value_Type.Bool);
+            else if (Value.IsString(value)) val = new Value(value.Substring(0, value.Length - 1), Value.Value_Type.String);
             else val = new Value(value);
 
             return val;
@@ -64,7 +55,7 @@ namespace Gnosis
             AddVariable(name,v);
         }
 
-        public void AddVariable(string name, dynamic value, int valueType)
+        public void AddVariable(string name, dynamic value, Value.Value_Type valueType)
         {
             var v = new Variable(new Value(value, valueType));
             AddVariable(name, v);
