@@ -55,7 +55,7 @@ var:
 	
 short hand code like += -= *= /= %=
 
-		<main>
+	<main>
 		var name = value;
 		var name += value + valueMethod();
         </main>
