@@ -10,8 +10,8 @@ namespace Gnosis
          */
         private readonly string code;
         private int codeIndex = 0;
-        private readonly int line = 0;
-        private readonly int main = 0;
+        //private readonly int line = 0;
+        //private readonly int main = 0;
 
         bool initialRun = true;
 
@@ -249,15 +249,15 @@ namespace Gnosis
             return methods;
         }
 
-        public Lexer(string codeText, bool initialRun = true)
+        public Lexer(string codeText, bool _ = true)
         {
             code = codeText;
 
-            if (initialRun)
+            if (_)
             {
                 Methods = ExtractMethods(); // Extract methods
             }
-            else initialRun = false;
+            else _ = false;
         }
 
         public Lexer(List<string> statement)

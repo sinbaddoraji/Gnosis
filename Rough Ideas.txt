@@ -12,6 +12,7 @@ var dada = kik();
 
 booleans do not allow ((a == b) || (b == c))
 Correct syntax: (a == b || b == c)
+"!" to be implemented later on
 
 put boolean expressions in variables if it is to be sepretated carefully
 

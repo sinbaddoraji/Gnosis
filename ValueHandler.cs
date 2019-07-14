@@ -10,10 +10,10 @@ namespace Gnosis
     class ValueHandler
     {
         //This class handles variables and raw values for the method handler
-        private MathEngine mathEngine = new MathEngine();
+        private readonly MathEngine mathEngine = new MathEngine();
         private VariableHandler globalVariables;
         public LogicHandler logicHandler;
-        private Method method;
+        private readonly Method method;
 
         public bool IsVariable(string value)
         {
@@ -165,7 +165,7 @@ namespace Gnosis
             else return null;
         }
 
-        public ValueHandler(ref VariableHandler gV, ref Method m)
+        public ValueHandler(VariableHandler gV, Method m)
         {
             globalVariables = gV;
             method = m;

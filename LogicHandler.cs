@@ -14,11 +14,8 @@ namespace Gnosis
         //  ! -> NOT
         // && -> AND
         // || -> OR
-        string[] operators = new[] { "!", "&&", "||" }; // there may be more in the future
-        string[] comparer = new[] { "==", "!=", "<", ">", "<=", ">=" }; // there may be more in the future
+        string[] comparer = new[] { "==", "!=", "<", ">", "<=", ">=", "&&", "||" }; // there may be more in the future
 
-
-        bool IsOperator(string op) => operators.Contains(op);
 
         string GetInvariantBool(string str)
         {
@@ -32,6 +29,69 @@ namespace Gnosis
             }
         }
 
+        List<string> GetBoolValues(string[] tokens)
+        {
+            //Get Values from tokens
+            // man == Bird || bird == bird
+            // -> false || true -> true (Desired use)
+            List<string> values = new List<string>();
+
+            //Compare numbers using default number value type (double)
+
+            for (int i = 1; i < tokens.Length; i += 2)
+            {
+                if (comparer.Contains(tokens[i]))
+                {
+                    var value = valueHanlder.GetValue(tokens[i - 1]);
+                    if (value == null) value = tokens[i - 1];
+
+                    var nextValue = valueHanlder.GetValue(tokens[i + 1]);
+                    if (nextValue == null) nextValue = tokens[i + 1];
+
+                    
+                    switch (tokens[i])
+                    {
+                        case "==":
+                            values.Add((Convert.ToString(value) == Convert.ToString(nextValue)).ToString());
+                            break;
+
+                        case "!=":
+                            values.Add((Convert.ToString(value) != Convert.ToString(nextValue)).ToString());
+                            break;
+
+                        case "<":
+                            values.Add((Convert.ToDouble(value) < Convert.ToDouble(nextValue)).ToString());
+                            break;
+
+                        case ">":
+                            values.Add((Convert.ToDouble(value) > Convert.ToDouble(nextValue)).ToString());
+                            break;
+
+                        case "<=":
+                            values.Add((Convert.ToDouble(value) <= Convert.ToDouble(nextValue)).ToString());
+                            break;
+
+                        case ">=":
+                            values.Add((Convert.ToDouble(value) >= Convert.ToDouble(nextValue)).ToString());
+                            break;
+
+                        case "&&":
+                        case "||":
+                            values.Add(tokens[i]);
+                            break;
+                    }
+                }
+                else
+                {
+                    //Throw Error
+                    //Not implemented
+                    return null;
+                }
+            }
+
+            return values;
+        }
+
         public bool IntepreteBoolExpression(string[] tokens)
         {
             if(tokens.Length == 1)
@@ -41,74 +101,8 @@ namespace Gnosis
                 return bool.Parse(value);
             }
 
-            List<string> values = new List<string>();
+            List<string> values = GetBoolValues(tokens);
 
-            //value == 15 && value == 16
-            for (int i = 0; i < tokens.Length; i++)
-            {
-               var value = valueHanlder.GetValue(tokens[i]);
-
-                if (value != null)
-                    tokens[i] = Convert.ToString(value);
-                else if (comparer.Contains(tokens[i]))
-                {
-                    var nextValue = valueHanlder.GetValue(tokens[i + 1]);
-                    if (nextValue != null) tokens[i + 1] = Convert.ToString(nextValue);
-
-                    if (tokens[i] == "==")
-                    {
-                        values.Add((tokens[i - 1] == tokens[i + 1]).ToString());
-                    }
-                    else if (tokens[i] == "!=")
-                    {
-                        values.Add((tokens[i - 1] != tokens[i + 1]).ToString());
-                    }
-                    else if (tokens[i] == "<")
-                    {
-                        //Compare as doubles
-                        value = double.Parse(tokens[i -1]);
-                        nextValue = double.Parse(tokens[i + 1]);
-
-                        values.Add((value < nextValue).ToString());
-                    }
-                    else if (tokens[i] == ">")
-                    {
-                        //Compare as doubles
-                        value = double.Parse(tokens[i - 1]);
-                        nextValue = double.Parse(tokens[i + 1]);
-
-                        values.Add((value > nextValue).ToString());
-                    }
-                    else if (tokens[i] == "<=")
-                    {
-                        //Compare as doubles
-                        value = double.Parse(tokens[i - 1]);
-                        nextValue = double.Parse(tokens[i + 1]);
-
-                        values.Add((value <= nextValue).ToString());
-                    }
-                    else if (tokens[i] == ">=")
-                    {
-                        //Compare as doubles
-                        value = double.Parse(tokens[i - 1]);
-                        nextValue = double.Parse(tokens[i + 1]);
-
-                        values.Add((value >= nextValue).ToString());
-                    }
-                    i++; // Skip next comparison (no need)
-                }
-                else if (operators.Contains(tokens[i]))
-                {
-                    if (tokens[i] == "!")
-                    {
-                        tokens[i + 1] = GetInvariantBool(tokens[i + 1]);
-                        values.Add(tokens[i + 1]);
-                        i++;
-                    }
-                    else values.Add(tokens[i]);
-                }
-                
-            }
 
             bool output = bool.Parse(values[0]);
 

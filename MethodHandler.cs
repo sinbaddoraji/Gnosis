@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Gnosis
 {
     class MethodHandler
     {
-        VariableHandler globalVariables;
-        LogicHandler logicHandler;
-        ValueHandler valueHanlder;
+        readonly VariableHandler globalVariables;
+        readonly LogicHandler logicHandler;
+        readonly ValueHandler valueHanlder;
         Method method; 
 
         public MethodHandler(VariableHandler globalVars,  Method m)
@@ -18,7 +15,7 @@ namespace Gnosis
             method = m;
             globalVariables = globalVars;
 
-            valueHanlder = new ValueHandler(ref globalVariables, ref method);
+            valueHanlder = new ValueHandler(globalVariables, method);
             logicHandler = new LogicHandler(valueHanlder);
 
             valueHanlder.logicHandler = logicHandler;

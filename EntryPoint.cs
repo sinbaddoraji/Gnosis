@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
+﻿using System.IO;
 
 namespace Gnosis
 {
@@ -12,7 +7,7 @@ namespace Gnosis
     {
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\CountUp.gno" };
+            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\CountUp.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments

@@ -8,7 +8,7 @@ namespace Gnosis
 {
     class VariableHandler
     {
-        Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+        readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
 
         public bool IsVariable(string variable) => variables.ContainsKey(variable);
 
