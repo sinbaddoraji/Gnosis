@@ -10,6 +10,11 @@ namespace Gnosis
         readonly ValueHandler valueHanlder;
         Method method; 
 
+        bool IsVariable(string variableName)
+        {
+            return globalVariables.IsVariable(variableName) || method.lexer.isVariable(variableName);
+        }
+
         public MethodHandler(VariableHandler globalVars,  Method m)
         {
             method = m;
@@ -43,6 +48,44 @@ namespace Gnosis
             else if (statement.tokens[0] == "var") VarDeclaration(statement);
             else if (statement.tokens[0] == "if") IfStatement(statement, false);
             else if (statement.tokens[0] == "while") IfStatement(statement, true);
+            else if (IsVariable(statement.tokens[0]))
+            {
+                //variable = blahblah + blah
+                //var variable = variable + blahblah + blah
+
+                statement.tokens.Insert(0, "var");
+                string variableName = statement.tokens[1];
+
+                switch (statement.tokens[2])
+                {
+                    case "=":
+                        //Do nothing
+                        break;
+
+                    case "+=":
+                        statement.tokens.InsertRange(3, new List<string>(){ variableName, "+"});
+                        break;
+
+                    case "-=":
+                        statement.tokens.InsertRange(3, new List<string>() { variableName, "-" });
+                        break;
+
+                    case "*=":
+                        statement.tokens.InsertRange(3, new List<string>() { variableName, "*" });
+                        break;
+
+                    case "/=":
+                        statement.tokens.InsertRange(3, new List<string>() { variableName, "/" });
+                        break;
+
+                    case "%=":
+                        statement.tokens.InsertRange(3, new List<string>() { variableName, "%" });
+                        break;
+                }
+
+                statement.tokens[2] = "=";
+                IntepreteCommand(statement);
+            }
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
