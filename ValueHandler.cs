@@ -43,10 +43,7 @@ namespace Gnosis
 
         public double ParseDoubleExpression(List<string> tokens)
         {
-            tokens.RemoveRange(0,3);
-            tokens.RemoveAt(tokens.Count - 1);
-
-            string expression = string.Join("",tokens);
+            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
             var rt = MathEngine.ReturnType.Double;
 
             return (double)ParseNumberExpression(expression,rt);
@@ -55,10 +52,7 @@ namespace Gnosis
 
         public float ParseFloatExpression(List<string> tokens)
         {
-            tokens.RemoveRange(0, 3);
-            tokens.RemoveAt(tokens.Count - 1);
-
-            string expression = string.Join("", tokens);
+            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
             var rt = MathEngine.ReturnType.Float;
 
             return (float)ParseNumberExpression(expression, rt);
@@ -67,10 +61,7 @@ namespace Gnosis
 
         public int ParseIntExpression(List<string> tokens)
         {
-            tokens.RemoveRange(0, 3);
-            tokens.RemoveAt(tokens.Count - 1);
-
-            string expression = string.Join("", tokens);
+            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
             var rt = MathEngine.ReturnType.Int;
 
             return (int)ParseNumberExpression(expression, rt);
@@ -82,20 +73,16 @@ namespace Gnosis
             tokens.RemoveRange(0, 3);
             tokens.RemoveAt(tokens.Count - 1);
 
-            string expression = string.Join("", tokens);
+            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
             var rt = MathEngine.ReturnType.Long;
 
             return (long)ParseNumberExpression(expression, rt);
             //var value = blah + blah + blah
         }
 
-        public string ParseStringExpression(List<string> tokens, bool fromVariable = true)
+        public string ParseStringExpression(List<string> t, bool fromVariable = true)
         {
-            if(fromVariable)
-            {
-                tokens.RemoveRange(0, 3);
-                tokens.RemoveAt(tokens.Count - 1);
-            }
+            List<string> tokens = fromVariable ? t.GetRange(3, t.Count - 4) : t;
             
 
             string output = "";

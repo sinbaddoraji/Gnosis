@@ -30,19 +30,19 @@ namespace Gnosis
             for (int i = 0; i < this.method.lot.Count; i++)
             {
                 var statement = this.method.lot[i];
-                IntepreteCommand(ref statement);
+                IntepreteCommand(statement);
             }
                 
         }
 
-        public void IntepreteCommand(ref Statement statement)
+        public void IntepreteCommand(Statement statement)
         {
             if(statement.tokens.Count == 0) return;
-            else if(statement.tokens[0] == "print") Print(ref statement);
-            else if (statement.tokens[0] == "input") Input(ref statement);
-            else if (statement.tokens[0] == "var") VarDeclaration(ref statement);
-            else if (statement.tokens[0] == "if") IfStatement(ref statement);
-            else if (statement.tokens[0] == "while") WhileLoopStatement(statement);
+            else if(statement.tokens[0] == "print") Print(statement);
+            else if (statement.tokens[0] == "input") Input(statement);
+            else if (statement.tokens[0] == "var") VarDeclaration(statement);
+            else if (statement.tokens[0] == "if") IfStatement(statement, false);
+            else if (statement.tokens[0] == "while") IfStatement(statement, true);
             else if(statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -55,7 +55,7 @@ namespace Gnosis
             }
         }
 
-        void Print(ref Statement printStatement)
+        void Print(Statement printStatement)
         {
             string output = "";
 
@@ -77,7 +77,7 @@ namespace Gnosis
 
         }
 
-        void Input(ref Statement printStatement)
+        void Input(Statement printStatement)
         {
             //input >> variable;
             //input "Display string" >> variable;
@@ -110,7 +110,7 @@ namespace Gnosis
             globalVariables.AddVariable(variableName,value);
         }
 
-        void VarDeclaration(ref Statement varStatement)
+        void VarDeclaration(Statement varStatement)
         {
             //Variable type will be based on the first variable in statement (tokens[3])
             string variableName = varStatement.tokens[1];
@@ -200,46 +200,27 @@ namespace Gnosis
             statement.tokens.CopyTo(boolStart, boolTokens, 0, boolEnd - boolStart);
         }
 
-        void IfStatement(ref Statement ifStatement)
+        void IfStatement(Statement statement, bool whileLoop)
         {
             //i -> index of {
+            //Code for while statement and if statement merged because of similarity
 
-            PrepareConditionalStatement(ref ifStatement, out string[] boolTokens, out int i);
+            PrepareConditionalStatement(ref statement, out string[] boolTokens, out int i);
 
-            if (logicHandler.IntepreteBoolExpression(boolTokens))
-            {
-                //Remove all tokens before starting of {
-                ifStatement.tokens.RemoveRange(0, i + 1);
+            int len = statement.tokens.Count - (i + 1); // token count
 
-                ifStatement.internalMethod = new Method(ifStatement.tokens);
-                ifStatement.internalVariableHandler = new VariableHandler();
-                ifStatement.internalMethodHandler = new MethodHandler(globalVariables, ifStatement.internalMethod);
-
-                ifStatement.RunStatement();
-            }
-        }
-
-        void WhileLoopStatement(Statement whileLoopStatement)
-        {
-            //i -> index of {
-
-            PrepareConditionalStatement(ref whileLoopStatement, out string[] boolTokens, out int i);
-
-            //Remove all tokens before starting of {
-            whileLoopStatement.tokens.RemoveRange(0, i + 1);
-            whileLoopStatement.internalVariableHandler = new VariableHandler();
-
-            whileLoopStatement.internalMethod = new Method(whileLoopStatement.tokens);
-
-            whileLoopStatement.internalMethodHandler = new MethodHandler(globalVariables, whileLoopStatement.internalMethod);
-
-            var doFunc = boolTokens;
+            statement.internalMethod = new Method(statement.tokens.GetRange(i + 1, len));
+            statement.internalVariableHandler = new VariableHandler();
+            statement.internalMethodHandler = new MethodHandler(globalVariables, statement.internalMethod);
 
             while (logicHandler.IntepreteBoolExpression(boolTokens))
             {
-                whileLoopStatement.RunStatement();
+                statement.RunStatement();
+                if(whileLoop == false) break; // is if statement
+                // else continue as while statement
             }
         }
+
 
     }
 }

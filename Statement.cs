@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Gnosis
 {
-    class Statement
+    class Statement 
     {
         public Method internalMethod;
         public MethodHandler internalMethodHandler;
@@ -20,6 +20,12 @@ namespace Gnosis
         {
             tokens = statement;
             this.isConditional = isConditional;
+        }
+
+        public Statement Clone()
+        {
+            Statement newStatement = new Statement(tokens,isConditional);
+            return newStatement;
         }
 
         public void RunStatement()
