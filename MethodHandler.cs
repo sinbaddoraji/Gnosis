@@ -63,23 +63,11 @@ namespace Gnosis
                         break;
 
                     case "+=":
-                        statement.tokens.InsertRange(3, new List<string>(){ variableName, "+"});
-                        break;
-
                     case "-=":
-                        statement.tokens.InsertRange(3, new List<string>() { variableName, "-" });
-                        break;
-
                     case "*=":
-                        statement.tokens.InsertRange(3, new List<string>() { variableName, "*" });
-                        break;
-
                     case "/=":
-                        statement.tokens.InsertRange(3, new List<string>() { variableName, "/" });
-                        break;
-
                     case "%=":
-                        statement.tokens.InsertRange(3, new List<string>() { variableName, "%" });
+                        statement.tokens.InsertRange(3, new List<string>(){ variableName, statement.tokens[2][0].ToString()});
                         break;
                 }
 
@@ -228,14 +216,23 @@ namespace Gnosis
             //if (value == 15 && value == 16)
             int boolStart = 2, boolEnd = 2;
 
-            
-            for (i = 1; i < statement.tokens.Count; i++)
+            int openedBrackets = 0;
+            for (i = 0; i < statement.tokens.Count; i++)
             {
-                if (statement.tokens[i] == ")")
+                if (statement.tokens[i] == "(")
                 {
-                    boolEnd = i;
-                    i++;
-                    break;
+                    openedBrackets++;
+                }
+                else if (statement.tokens[i] == ")")
+                {
+                    if (openedBrackets == 0 || openedBrackets == 1)
+                    {
+                        i++;
+                        boolEnd = i;
+                        break;
+                    }
+                    else
+                        openedBrackets -= 1;
                 }
             }
 
