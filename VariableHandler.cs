@@ -14,13 +14,18 @@ namespace Gnosis
 
         public bool IsArray(string variable)
         {
-             return variables.ContainsKey(variable) && variables[variable].IsArray;
+            try
+            {
+                return variables[variable].IsArray;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public static Value ProcessedValue(string value)
         {
-            //< 1 (false), > 0 (true)
-
             Value val;
 
             if (Value.IsDouble(value)) val = new Value(double.Parse(value), Value.Value_Type.Double);
@@ -59,15 +64,7 @@ namespace Gnosis
             AddVariable(name, v);
         }
 
-
-        public Variable GetVariable(string name, string type)
-        {
-            return null; //To be implemented
-        }
-        public Variable GetVariable(string name)
-        {
-            return variables[name];
-        }
+        public Variable GetVariable(string name) => variables[name];
 
         public dynamic GetArray(string name, int index)
         {

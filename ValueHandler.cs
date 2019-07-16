@@ -116,8 +116,12 @@ namespace Gnosis
             //var value = blah + blah + blah
         }
 
-        public string ParseBoolExpression(List<string> tokens, bool inStatement = false)
+
+        public string ParseBoolExpression(List<string> t, bool inStatement = false)
         {
+            //Check here if having boolean issues
+            List<string> tokens = new List<string>(t);
+
             if(inStatement)
             {
                 tokens.RemoveRange(0, 4);
@@ -142,6 +146,11 @@ namespace Gnosis
             else if (globalVariables.IsArray(name))
             {
                 return globalVariables.GetArray(name,index);
+            }
+            else if (ValueType(name) == Value.Value_Type.String)
+            {
+                string str = GetValue(name);
+                return str[index];
             }
             else
             {
@@ -184,8 +193,9 @@ namespace Gnosis
                 var t = value.Split('[',']');
                 var vName = t[0];
                 var index = Convert.ToInt32(GetValue(t[1]));
-                
-                return GetArray(vName,index);
+
+                if(!IsArray(vName)) return GetValue(vName)[index];
+                else return GetArray(vName,index);
             }
             else if (Lexer.IsString(value))
             {

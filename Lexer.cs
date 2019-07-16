@@ -10,12 +10,12 @@ namespace Gnosis
          */
         private readonly string code;
         private int codeIndex = 0;
+
         //private readonly int line = 0;
         //private readonly int main = 0;
 
-        bool initialRun = true;
-
-        List<string> rawTokens;
+        private readonly bool initialRun = true;
+        private readonly List<string> rawTokens;
 
         public List<string> currentTree = new List<string>();
         public List<List<string>> Trees = new List<List<string>>();
@@ -29,6 +29,7 @@ namespace Gnosis
         {
             "print", "input", "var","pause", "let"
         };
+
         private readonly string[] conditionalKeywords = new string[]
         {
             "while", "switch", "for", "foreach", "if", "case"
@@ -42,51 +43,25 @@ namespace Gnosis
             "++","--","+=","-=","*=","/=","!=","==", "<<",">>","||","&&"
         };
 
-        public Method MainMethod()
-        {
-            return Methods["main"];
-        }
+        public Method MainMethod() => Methods["main"];
 
-        public bool IsVariable(string val)
-        {
-            return Variables.IsVariable(val);
-        }
+        public bool IsVariable(string val) => Variables.IsVariable(val);
 
-        public bool IsArray(string val)
-        {
-            return Variables.IsArray(val);
-        }
+        public bool IsArray(string val) => Variables.IsArray(val);
 
         public static bool IsString(string str)
         {
-            if(str == null) return false;
-
-            if (!str.StartsWith("\"") || !str.EndsWith("\""))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            if (str == null || !str.StartsWith("\"") || !str.EndsWith("\"")) return false;
+            else return true;
         }
 
-        private bool IsSymbol(string str)
-        {
-            return operators.Contains(str) || doubleOperators.Contains(str);
-        }
+        private bool IsSymbol(string str) => operators.Contains(str) || doubleOperators.Contains(str);
 
-        private bool IsKeyword(string str)
-        {
-            return keywords.Contains(str) || conditionalKeywords.Contains(str);
-        }
+        private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str);
 
         public bool Eof()
         {
-            if (initialRun == false && rawTokens != null)
-            {
-                return codeIndex >= rawTokens.Count;
-            }
+            if (initialRun == false && rawTokens != null) return codeIndex >= rawTokens.Count;
             else return codeIndex >= code.Length;
         }
 
@@ -217,7 +192,7 @@ namespace Gnosis
                 }
             }
 
-            return new Statement(statementOutput.Where(x => x != "").ToList(), bracket);
+            return new Statement(statementOutput.Where(x => x != "").ToList());
         }
 
         private Dictionary<string, Method> ExtractMethods()

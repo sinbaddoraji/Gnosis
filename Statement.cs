@@ -14,24 +14,9 @@ namespace Gnosis
 
         public List<string> tokens = new List<string>();
 
-        bool isConditional = false; // Is a statement with {}
+        public Statement(List<string> statement) => tokens = statement;
 
-        public Statement(List<string> statement, bool isConditional = false)
-        {
-            tokens = statement;
-            this.isConditional = isConditional;
-        }
-
-        public Statement Clone()
-        {
-            Statement newStatement = new Statement(tokens,isConditional);
-            return newStatement;
-        }
-
-        public void RunStatement()
-        {
-            internalMethodHandler.DoFunction(internalMethod);
-        }
+        public void RunStatement() => internalMethodHandler.DoFunction(internalMethod);
 
     }
 }

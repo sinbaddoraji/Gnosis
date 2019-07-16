@@ -8,39 +8,23 @@ namespace Gnosis
 {
     class Variable
     {
-
         public Value.Value_Type ValueType() => value.type;
 
         public Value value;
 
         public bool IsArray = false;
 
-        public Variable(Value value)
-        {
-            this.value = value;
-        }
+        public Variable(Value value) => this.value = value;
 
-        public Variable(string value, bool rawString = false)
-        {
-            this.value = rawString ? new Value(value,Value.Value_Type.String) 
+        public Variable(string value, bool rawString = false) => 
+            this.value = rawString ? new Value(value, Value.Value_Type.String)
                 : VariableHandler.ProcessedValue(value);
-        }
-
-
     }
 
     class Array : Variable
     {
-        //list
+        public Array(Value value) : base(value) => IsArray = true;
 
-        public Array(Value value) : base(value) 
-        {
-            IsArray = true;
-        }
-
-        public dynamic GetValue(int index)
-        {
-            return ((List<object>)value.value)[index];
-        }
+        public dynamic GetValue(int index) => ((List<object>)value.value)[index];
     }
 }
