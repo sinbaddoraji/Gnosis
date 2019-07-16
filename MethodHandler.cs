@@ -245,6 +245,7 @@ namespace Gnosis
                 }
             }
 
+            boolEnd--;
             boolTokens = new string[boolEnd - boolStart];
             statement.tokens.CopyTo(boolStart, boolTokens, 0, boolEnd - boolStart);
         }
@@ -282,6 +283,9 @@ namespace Gnosis
             {
                 if(forRunTokens[j] == "|" || j == forRunTokens.Length - 1)
                 {
+                    if(j == forRunTokens.Length - 1) 
+                        current.Add(forRunTokens[j]);
+
                     if (forRunTokens[j] == "|")
                     {
                         forRunTokens[j] = ";";
