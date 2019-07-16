@@ -35,34 +35,27 @@ Basic Keywords:
 
 The following are example cases on the use of the stated tokens
 
-print:
-	<main>
-		print << str << endl;
-        </main>
-
 input:
 	<main>
 		input >> variable;
-		input "Display string" >> variable;
+		print << variable << endl;
+		input "Tell me something: " >> variable;
+		print << variable << endl;
         </main>
 	
-
 var:
 	<main>
-		var name = value;
-		var name = value + valueMethod();
-        </main>
-	
-	<main>
-	var elements = {"air", "fire", "earth", "water"};
-	
-	for (var i = 0| i < $elements| i++)
-	{
-		print << elements[i] << endl;
-	};
-	
-	pause;
-</main>
+		var name = "yesa";
+		var elements = {"air", "fire", "earth", "water"};
+		
+		print << name << endl;
+		for (var i = 0| i < $elements| i++)
+		{
+			print << elements[i] << endl;
+		};
+
+		pause;
+	</main>
 	
 short hand code like += -= *= /= %=
 
