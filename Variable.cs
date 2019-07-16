@@ -31,23 +31,16 @@ namespace Gnosis
 
     class Array : Variable
     {
-        //if array length specified then array becomes static
-        //else it acts as a list
+        //list
 
-        public bool isStaticArray = false;
-        public Array(string type) : base(type)
+        public Array(Value value) : base(value) 
         {
             IsArray = true;
         }
 
-        public Array(string type,int maxLength) : this(type)
-        {
-            isStaticArray = true;
-        }
-
         public dynamic GetValue(int index)
         {
-            return null;
+            return ((List<object>)value.value)[index];
         }
     }
 }

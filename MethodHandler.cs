@@ -12,7 +12,12 @@ namespace Gnosis
 
         bool IsVariable(string variableName)
         {
-            return globalVariables.IsVariable(variableName) || method.lexer.isVariable(variableName);
+            return globalVariables.IsVariable(variableName) || method.lexer.IsVariable(variableName);
+        }
+
+        bool IsArray(string variableName)
+        {
+            return (globalVariables.IsArray(variableName) || method.lexer.IsArray(variableName));
         }
 
         public MethodHandler(VariableHandler globalVars,  Method m)
@@ -42,6 +47,24 @@ namespace Gnosis
 
         public void IntepreteCommand(Statement statement)
         {
+            while(statement.tokens.Contains("[") && statement.tokens.Contains("]"))
+            {
+                for (int i = 0; i < statement.tokens.Count; i++)
+                {
+                    //elements [ 0 ]
+                    if (IsArray(statement.tokens[i]))
+                    {
+                        //i+1,i+3
+                        statement.tokens[i] += statement.tokens[i + 1];
+                        statement.tokens[i] += statement.tokens[i + 2];
+                        statement.tokens[i] += statement.tokens[i + 3];
+                        statement.tokens.RemoveRange(i + 1, 3);
+                        break;
+                    }
+                }
+            }
+            
+
             if(statement.tokens.Count == 0) return;
             else if(statement.tokens[0] == "print") Print(statement);
             else if (statement.tokens[0] == "input") Input(statement);
@@ -172,9 +195,32 @@ namespace Gnosis
                     //Methods with return statements
                 }
             }
-            //var value = blah + blah + blah
 
             dynamic value;
+
+            if (valueType == Value.Value_Type.Array)
+            {
+                var arrayValueType = valueHanlder.ValueType(varStatement.tokens[4]);
+                List<dynamic> arr = new List<dynamic>();
+
+                for (int i = 4; i < varStatement.tokens.IndexOf("}"); i += 2)
+                    arr.Add(valueHanlder.GetValue(varStatement.tokens[i]));
+
+                Array a = new Array(new Value(arr));
+
+                if (globalVariables.IsVariable(variableName))
+                {
+                    globalVariables.AddVariable(variableName, a);
+                }
+                else
+                {
+                    method.lexer.Variables.AddVariable(variableName, a);
+                }
+
+            }
+
+            //var value = blah + blah + blah
+            
             switch (valueType)
             {
                 case Value.Value_Type.Double:

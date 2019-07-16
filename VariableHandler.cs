@@ -12,6 +12,11 @@ namespace Gnosis
 
         public bool IsVariable(string variable) => variables.ContainsKey(variable);
 
+        public bool IsArray(string variable)
+        {
+             return variables.ContainsKey(variable) && variables[variable].IsArray;
+        }
+
         public static Value ProcessedValue(string value)
         {
             //< 1 (false), > 0 (true)
@@ -29,14 +34,7 @@ namespace Gnosis
             return val;
         }
 
-        public void AddArrayVariable(string name, string value, string type, int maxIndex)
-        {
-            //Add static array (Native Array)
-            //variables.Add(name, new Array(type,maxIndex));
-            //To be implemented
-        }
-
-        private void AddVariable(string name, Variable v)
+        public void AddVariable(string name, Variable v)
         {
             //If variables contains variable with "name"
             //      edit the variable
@@ -71,9 +69,9 @@ namespace Gnosis
             return variables[name];
         }
 
-        public dynamic GetArray(string name, string type, int index)
+        public dynamic GetArray(string name, int index)
         {
-            Array array = (Array)GetVariable(name, type);
+            Array array = (Array)GetVariable(name);
 
             return array.GetValue(index);
         }

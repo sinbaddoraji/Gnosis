@@ -11,7 +11,7 @@ namespace Gnosis
         public Value_Type type;
         public dynamic value;
 
-        public enum Value_Type { Double, Float, Int, Long, Bool, String, Other };
+        public enum Value_Type { Double, Float, Int, Long, Bool, String, Array, Other };
 
         public static bool IsDouble(string val) => double.TryParse(val, out double d);
 

@@ -17,7 +17,7 @@ namespace Gnosis
 
         public bool IsVariable(string value)
         {
-            return method.lexer.isVariable(value) || globalVariables.IsVariable(value);
+            return method.lexer.IsVariable(value) || globalVariables.IsVariable(value);
         }
 
         public Value.Value_Type ValueType(string value)
@@ -25,7 +25,11 @@ namespace Gnosis
             //Find out if checking variable
             //if checking variable return variable value type
             //else return variable type
-            if (method.lexer.isVariable(value))
+            if (value == "{")
+            {
+                return Value.Value_Type.Array;
+            }
+            if (method.lexer.IsVariable(value))
             {
                 return method.lexer.Variables.GetVariable(value).ValueType();
             }
@@ -123,6 +127,23 @@ namespace Gnosis
             //var value = blah + blah + blah
         }
 
+        public dynamic GetArray(string name, int index)
+        {
+            if (method.lexer.IsArray(name))
+            {
+                return method.lexer.Variables.GetArray(name,index);
+            }
+            else if (globalVariables.IsArray(name))
+            {
+                return globalVariables.GetArray(name,index);
+            }
+            else
+            {
+                //Throw error
+                //To be implemented
+                return -02030303;
+            }
+        }
 
         public dynamic GetValue(string value)
         {
@@ -131,6 +152,15 @@ namespace Gnosis
             {
                 string rawValue = Convert.ToString(GetValue(value.Substring(1,value.Length - 1)));
                 return rawValue.Length;
+            }
+            else if(value.Contains("["))
+            {
+                //elements[0]
+                var t = value.Split('[',']');
+                var vName = t[0];
+                var index = Convert.ToInt32(t[1]);
+                
+                return GetArray(vName,index);
             }
             else if (Lexer.IsString(value))
             {
@@ -143,7 +173,7 @@ namespace Gnosis
                     .Replace("\\t", "\t")
                     .Replace("\\v", "\v");
             }
-            else if (method.lexer.isVariable(value))
+            else if (method.lexer.IsVariable(value))
             {
                 return method.lexer.Variables.GetVariable(value).value.value;
             }

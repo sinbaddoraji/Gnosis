@@ -47,9 +47,14 @@ namespace Gnosis
             return Methods["main"];
         }
 
-        public bool isVariable(string val)
+        public bool IsVariable(string val)
         {
             return Variables.IsVariable(val);
+        }
+
+        public bool IsArray(string val)
+        {
+            return Variables.IsArray(val);
         }
 
         public static bool IsString(string str)
@@ -159,7 +164,7 @@ namespace Gnosis
                     cur += next;
                 }
 
-                if (isVariable(cur) || IsString(cur) || IsSymbol(cur) || IsKeyword(cur))
+                if (IsVariable(cur) || IsString(cur) || IsSymbol(cur) || IsKeyword(cur))
                 {
                     return cur;
                 }
