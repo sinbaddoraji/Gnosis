@@ -59,17 +59,21 @@ namespace Gnosis
 
         private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str);
 
-        public bool Eof()
+        public bool Eof
         {
-            if (initialRun == false && rawTokens != null) return codeIndex >= rawTokens.Count;
-            else return codeIndex >= code.Length;
+            //End of file
+            get
+            {
+                if (initialRun == false && rawTokens != null) return codeIndex >= rawTokens.Count;
+                else return codeIndex >= code.Length;
+            }
         }
 
         private string NextBit()
         {
             string output;
 
-            if(Eof()) return "";
+            if(Eof) return "";
 
             if(initialRun == false && rawTokens != null)
             {
@@ -82,10 +86,7 @@ namespace Gnosis
             output = code[codeIndex].ToString();
             codeIndex++;
 
-            if (codeIndex == code.Length)
-            {
-                return null;
-            }
+            if (codeIndex == code.Length) return null;
 
             //If string
             if (output == "\"")
@@ -120,7 +121,7 @@ namespace Gnosis
 
             while (true)
             {
-                if(Eof()) return null;
+                if(Eof) return null;
 
                 string next = NextBit();
 
@@ -130,19 +131,10 @@ namespace Gnosis
                     cur = "";
                 }
 
-                if (next == null)
-                {
-                    return null;
-                }
-                else
-                {
-                    cur += next;
-                }
+                if (next == null) return null;
+                else cur += next;
 
-                if (IsVariable(cur) || IsString(cur) || IsSymbol(cur) || IsKeyword(cur))
-                {
-                    return cur;
-                }
+                if (IsVariable(cur) || IsString(cur) || IsSymbol(cur) || IsKeyword(cur)) return cur;
             }
         }
 
@@ -160,7 +152,7 @@ namespace Gnosis
 
             while (true)
             {
-                if (Eof()) break;
+                if (Eof) break;
 
                 if (cur != "")
                 {

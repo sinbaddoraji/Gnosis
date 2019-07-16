@@ -15,7 +15,7 @@ namespace Gnosis
 
         private void GetStatements()
         {
-            while (!lexer.Eof())
+            while (!lexer.Eof)
             {
                 Statement nextStatement = lexer.NextStatement();
                 lot.Add(nextStatement);
