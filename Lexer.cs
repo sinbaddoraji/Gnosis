@@ -35,7 +35,7 @@ namespace Gnosis
         };
         private readonly string[] operators = new string[]
         {
-            "+", "-","*", "/", "=", ">", "<", "!", "%", "[", "]", "{", "}","(",")",",",";"
+            "+", "-","*", "/", "=", ">", "<", "!", "%", "[", "]", "{", "}","(",")",",",";", "|"
         };
         private readonly string[] doubleOperators = new string[]
         {

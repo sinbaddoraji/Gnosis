@@ -126,7 +126,13 @@ namespace Gnosis
 
         public dynamic GetValue(string value)
         {
-            if (Lexer.IsString(value))
+
+            if (value.StartsWith("%"))
+            {
+                string rawValue = Convert.ToString(GetValue(value.Substring(1,value.Length - 1)));
+                return rawValue.Length;
+            }
+            else if (Lexer.IsString(value))
             {
                 return value.Substring(1, value.Length - 2)
                     .Replace("\\a", "\a")

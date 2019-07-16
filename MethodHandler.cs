@@ -48,6 +48,7 @@ namespace Gnosis
             else if (statement.tokens[0] == "var") VarDeclaration(statement);
             else if (statement.tokens[0] == "if") IfStatement(statement, false);
             else if (statement.tokens[0] == "while") IfStatement(statement, true);
+            else if (statement.tokens[0] == "for") ForStatement(statement);
             else if (IsVariable(statement.tokens[0]))
             {
                 //variable = blahblah + blah
@@ -56,6 +57,9 @@ namespace Gnosis
                 statement.tokens.Insert(0, "var");
                 string variableName = statement.tokens[1];
 
+                //i++
+                //var i ++
+                //var i = i + 1
                 switch (statement.tokens[2])
                 {
                     case "=":
@@ -68,6 +72,11 @@ namespace Gnosis
                     case "/=":
                     case "%=":
                         statement.tokens.InsertRange(3, new List<string>(){ variableName, statement.tokens[2][0].ToString()});
+                        break;
+
+                    case "++":
+                    case "--":
+                        statement.tokens.InsertRange(3, new List<string>() { variableName, statement.tokens[2][0].ToString(), "1", ";" });
                         break;
                 }
 
@@ -261,6 +270,46 @@ namespace Gnosis
             }
         }
 
+        void ForStatement(Statement statement)
+        {
+            //i -> index of {
+            PrepareConditionalStatement(ref statement, out string[] forRunTokens, out int i);
+
+            List<List<string>> tT = new List<List<string>>();
+            List<string> current = new List<string>();
+
+            for (int j = 0; j < forRunTokens.Length; j++)
+            {
+                if(forRunTokens[j] == "|" || j == forRunTokens.Length - 1)
+                {
+                    if (forRunTokens[j] == "|")
+                    {
+                        forRunTokens[j] = ";";
+                        if (tT.Count != 1) current.Add(forRunTokens[j]);
+                    }
+                    tT.Add(current);
+                    current = new List<string>();
+                }
+                else current.Add(forRunTokens[j]);
+            }
+
+            //Setup statement
+            int len = statement.tokens.Count - (i + 1); // token count
+            statement.internalMethod = new Method(statement.tokens.GetRange(i + 1, len));
+            statement.internalVariableHandler = new VariableHandler();
+            statement.internalMethodHandler = new MethodHandler(globalVariables, statement.internalMethod);
+
+
+            //Get the three parts of for statement
+            string[] boolTokens = tT[1].ToArray();
+            statement.internalMethodHandler.IntepreteCommand(new Statement(tT[0])); //Run first part.. eg var i = 0
+
+            while (logicHandler.IntepreteBoolExpression(boolTokens))
+            {
+                statement.RunStatement();
+                statement.internalMethodHandler.IntepreteCommand(new Statement(tT[2])); //Run last part.. eg i++
+            }
+        }
 
     }
 }

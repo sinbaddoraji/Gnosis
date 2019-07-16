@@ -1,18 +1,21 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 
 namespace Gnosis
 {
-
     class EntryPoint
     {
+        static Dictionary<string, Method> Methods;
+
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\FizzBizz.gno" };
+            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\CountUp2.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
+            Methods = lexer.Methods;
             VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
