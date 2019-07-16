@@ -53,6 +53,17 @@ var:
 		var name = value + valueMethod();
         </main>
 	
+	<main>
+	var elements = {"air", "fire", "earth", "water"};
+	
+	for (var i = 0| i < $elements| i++)
+	{
+		print << elements[i] << endl;
+	};
+	
+	pause;
+</main>
+	
 short hand code like += -= *= /= %=
 
 	<main>
