@@ -5,11 +5,11 @@ namespace Gnosis
 {
     class EntryPoint
     {
-        static Dictionary<string, Method> Methods;
+        public static Dictionary<string, Method> Methods;
 
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Count vowels.gno" };
+            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Method1.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments
@@ -28,7 +28,6 @@ namespace Gnosis
 
             if (mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main
-              
         }
     }
 }

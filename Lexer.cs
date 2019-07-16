@@ -27,7 +27,7 @@ namespace Gnosis
 
         private readonly string[] keywords = new string[]
         {
-            "print", "input", "var","pause", "let"
+            "print", "input", "var","pause", "let", "public"
         };
 
         private readonly string[] conditionalKeywords = new string[]
@@ -57,7 +57,7 @@ namespace Gnosis
 
         private bool IsSymbol(string str) => operators.Contains(str) || doubleOperators.Contains(str);
 
-        private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str);
+        private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str) || Methods.ContainsKey(str);
 
         public bool Eof
         {
@@ -203,8 +203,8 @@ namespace Gnosis
                     break;
                 }
 
-                string methodName = code.Substring(internalIndex, code.IndexOf('>', internalIndex));
-                internalIndex = code.IndexOf(methodName.Insert(1, "/"));
+                string methodName = code.Substring(internalIndex, code.IndexOf('>', internalIndex) - internalIndex);
+                internalIndex = code.IndexOf(methodName.Insert(1, "/")) + 1;
                 string methodEnding = code.Substring(internalIndex, methodName.Length + 1);
 
                 //Skip method end signifier 
@@ -213,10 +213,18 @@ namespace Gnosis
                 int start = code.IndexOf(methodName) + methodName.Length + 2;//Exclude <method name>
                 int end = code.IndexOf(methodEnding);
 
-                string methodCode = code.Substring(start, end);
+                string methodCode = code.Substring(start, end - start);
                 methods.Add(methodName.Trim('<', '>'), new Method(methodCode));
 
-                internalIndex = code.IndexOf('<', internalIndex);
+                try
+                {
+                    internalIndex = code.IndexOf('<', internalIndex);
+                }
+                catch (System.Exception)
+                {
+                    internalIndex = -1;
+                }
+                
             }
             return methods;
         }

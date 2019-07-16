@@ -76,6 +76,13 @@ namespace Gnosis
                     Console.WriteLine("Press any key to continue...");
                     Console.ReadKey();
                 }
+                else if (EntryPoint.Methods.ContainsKey(command))
+                {
+                    Method m = EntryPoint.Methods[command];
+                    MethodHandler mh = new MethodHandler(globalVariables,m);
+                    mh.DoFunction(m);
+                    
+                }
             }
         }
 
@@ -133,7 +140,7 @@ namespace Gnosis
             globalVariables.AddVariable(variableName,value);
         }
 
-        private void SetupArrayVariable(Statement statement, string variableName)
+        private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
         {
             List<dynamic> arr = new List<dynamic>();
 
@@ -142,11 +149,11 @@ namespace Gnosis
 
             Array a = new Array(new Value(arr));
 
-            if (globalVariables.IsVariable(variableName)) globalVariables.AddVariable(variableName, a);
+            if (isPublic || globalVariables.IsVariable(variableName)) globalVariables.AddVariable(variableName, a);
             else method.lexer.Variables.AddVariable(variableName, a);
         }
 
-        private void SetupNormalVariable(Statement statement, string variableName, Value.Value_Type valueType)
+        private void SetupNormalVariable(Statement statement, string variableName, Value.Value_Type valueType, bool isPublic)
         {
             dynamic value;
 
@@ -186,21 +193,33 @@ namespace Gnosis
             }
 
 
-            if (globalVariables.IsVariable(variableName))
+            if (isPublic || globalVariables.IsVariable(variableName))
             {
                 globalVariables.AddVariable(variableName, value, valueType);
             }
-            else
-            {
-                method.lexer.Variables.AddVariable(variableName, value, valueType);
-            }
+            else method.lexer.Variables.AddVariable(variableName, value, valueType);
         }
 
         void VarDeclaration(Statement statement)
         {
             //Variable type will be based on the first variable in statement (tokens[3])
-            string variableName = statement.tokens[1];
-            var valueType = valueHanlder.ValueType(statement.tokens[3]);
+            string variableName;;
+            Value.Value_Type valueType; 
+
+            bool isPublic = false;
+            if(statement.tokens[1] == "public")
+            {
+                isPublic = true;
+                //var public ma = ndjnfr;
+                variableName = statement.tokens[2];
+                valueType = valueHanlder.ValueType(statement.tokens[4]);
+            }
+            else
+            {
+                variableName = statement.tokens[1];
+                valueType = valueHanlder.ValueType(statement.tokens[3]);
+            }
+            
 
             //if given "other" value type.. find out if is actually numeical or boolean value
             if (valueType == Value.Value_Type.Other)
@@ -221,9 +240,9 @@ namespace Gnosis
 
 
             if (valueType == Value.Value_Type.Array) 
-                SetupArrayVariable(statement, variableName);
+                SetupArrayVariable(statement, variableName, isPublic);
             else 
-                SetupNormalVariable(statement, variableName, valueType);
+                SetupNormalVariable(statement, variableName, valueType, isPublic);
 
         }
 

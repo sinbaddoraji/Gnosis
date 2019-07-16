@@ -22,3 +22,6 @@ for loop will be translated into a while loop in the intepreter..
 the first command will be run
 the second will be the condition
 and the third will be run after every cycle
+
+methods in Main are global and can be accessed in every method but not vice versa
+except variable created by using var public
