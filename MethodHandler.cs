@@ -6,7 +6,7 @@ namespace Gnosis
     class MethodHandler
     {
         readonly VariableHandler globalVariables;
-        readonly LogicHandler logicHandler;
+        public readonly LogicHandler logicHandler;
         readonly ValueHandler valueHanlder;
         Method method; 
 
@@ -354,7 +354,7 @@ namespace Gnosis
             string[] boolTokens = tT[1].ToArray();
             statement.internalMethodHandler.IntepreteCommand(new Statement(tT[0])); //Run first part.. eg var i = 0
 
-            while (logicHandler.IntepreteBoolExpression(boolTokens))
+            while (statement.internalMethodHandler.logicHandler.IntepreteBoolExpression(boolTokens))
             {
                 statement.RunStatement();
                 statement.internalMethodHandler.IntepreteCommand(new Statement(tT[2])); //Run last part.. eg i++

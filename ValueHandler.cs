@@ -20,6 +20,12 @@ namespace Gnosis
             return method.lexer.IsVariable(value) || globalVariables.IsVariable(value);
         }
 
+        public bool IsArray(string value)
+        {
+            return method.lexer.IsArray(value) || globalVariables.IsArray(value);
+        }
+
+
         public Value.Value_Type ValueType(string value)
         {
             //Find out if checking variable
@@ -148,17 +154,36 @@ namespace Gnosis
         public dynamic GetValue(string value)
         {
 
-            if (value.StartsWith("%"))
+            if (value.StartsWith("$"))
             {
-                string rawValue = Convert.ToString(GetValue(value.Substring(1,value.Length - 1)));
-                return rawValue.Length;
+                string val = value.Substring(1, value.Length - 1);
+
+                if (IsArray(val))
+                {
+                    List<object> _ = new List<object>();
+                    if (method.lexer.IsArray(val))
+                    {
+                        _ = (List<object>)method.lexer.Variables.GetVariable(val).value.value;
+                    }
+                    else if (globalVariables.IsArray(val))
+                    {
+                        _ = (List<object>)globalVariables.GetVariable(val).value.value;
+                    }
+                    
+                    return _.Count;
+                }
+                else
+                {
+                    string rawValue = Convert.ToString(GetValue(val));
+                    return rawValue.Length;
+                }
             }
             else if(value.Contains("["))
             {
                 //elements[0]
                 var t = value.Split('[',']');
                 var vName = t[0];
-                var index = Convert.ToInt32(t[1]);
+                var index = Convert.ToInt32(GetValue(t[1]));
                 
                 return GetArray(vName,index);
             }
