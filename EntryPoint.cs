@@ -9,7 +9,7 @@ namespace Gnosis
         public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Array.gno" };
+            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Method2.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments

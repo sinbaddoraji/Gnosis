@@ -28,7 +28,7 @@ namespace Gnosis
 
         private readonly string[] keywords = new string[]
         {
-            "print", "input", "var","pause", "let", "public", "pause"
+            "print", "input", "var","pause", "let", "public", "pause", "return"
         };
 
         private readonly string[] conditionalKeywords = new string[]

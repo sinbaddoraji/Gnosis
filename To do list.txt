@@ -4,6 +4,3 @@ array insert at
 array[index] = value
 
 implement comments
-
-Syntax : \\mfkmrfmrkmfmrkm\\
-fix code comment problem

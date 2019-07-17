@@ -13,6 +13,7 @@ namespace Gnosis
         readonly ValueHandler valueHanlder;
         Method method; 
 
+        public dynamic returned = null;
         bool IsVariable(string variableName)
         {
             return  GlobalVariables.IsVariable(variableName) || (OuterVariables != null && OuterVariables.IsVariable(variableName)) || InnerVariables.IsVariable(variableName);
@@ -31,6 +32,7 @@ namespace Gnosis
             //Run through every statement
             for (int i = 0; i < this.method.lot.Count; i++)
             {
+                if(returned != null)break;
                 var statement = this.method.lot[i];
                 IntepreteCommand(statement);
             }
@@ -68,6 +70,15 @@ namespace Gnosis
             else if (statement.tokens[0] == "if") IfStatement(statement, false);
             else if (statement.tokens[0] == "while") IfStatement(statement, true);
             else if (statement.tokens[0] == "for") ForStatement(statement);
+            else if (statement.tokens[0] == "for") ForStatement(statement);
+            else if (statement.tokens[0] == "return")
+            {
+                var valueType = valueHanlder.ValueType(statement.tokens[1]);
+                int lem = statement.tokens.Count;
+
+                returned = ExpressStatement(statement.tokens.GetRange(0,lem),valueType, false);
+                return;
+            }
             else if (IsVariable(statement.tokens[0])) ShortHandStatement(statement);
             else if (statement.tokens.Count == 2)
             {
@@ -94,6 +105,7 @@ namespace Gnosis
 
             List<string> internalTokens = new List<string>();
 
+            
             for (int i = 1; i < statement.tokens.Count; i++)
             {
                 string token = statement.tokens[i];
@@ -156,31 +168,31 @@ namespace Gnosis
             else InnerVariables.AddVariable(variableName, a);
         }
 
-        private void SetupNormalVariable(Statement statement, string variableName, Value.Value_Type valueType, bool isPublic)
+        private dynamic ExpressStatement(List<string> tokens, Value.Value_Type valueType, bool fromVariable = true)
         {
             dynamic value;
 
             switch (valueType)
             {
                 case Value.Value_Type.Double:
-                    value = valueHanlder.ParseDoubleExpression(statement.tokens);
+                    value = valueHanlder.ParseDoubleExpression(tokens, fromVariable);
                     break;
                 case Value.Value_Type.Float:
-                    value = valueHanlder.ParseFloatExpression(statement.tokens);
+                    value = valueHanlder.ParseFloatExpression(tokens, fromVariable);
                     break;
                 case Value.Value_Type.Int:
-                    value = valueHanlder.ParseIntExpression(statement.tokens);
+                    value = valueHanlder.ParseIntExpression(tokens, fromVariable);
                     break;
                 case Value.Value_Type.Long:
-                    value = valueHanlder.ParseLongExpression(statement.tokens);
+                    value = valueHanlder.ParseLongExpression(tokens, fromVariable);
                     break;
                 case Value.Value_Type.Bool:
-                    value = valueHanlder.ParseBoolExpression(statement.tokens, true);
+                    value = valueHanlder.ParseBoolExpression(tokens, fromVariable);
                     //To be implemented (Bool)
                     break;
 
                 case Value.Value_Type.String:
-                    value = valueHanlder.ParseStringExpression(statement.tokens);
+                    value = valueHanlder.ParseStringExpression(tokens, fromVariable);
                     break;
 
                 case Value.Value_Type.Other:
@@ -195,7 +207,15 @@ namespace Gnosis
                     break;
             }
 
-            if(isPublic) GlobalVariables.AddVariable(variableName, value, valueType);
+            return value;
+        }
+
+        private void SetupNormalVariable(Statement statement, string variableName, Value.Value_Type valueType, bool isPublic)
+        {
+            dynamic value = ExpressStatement(statement.tokens, valueType);
+
+
+            if (isPublic) GlobalVariables.AddVariable(variableName, value, valueType);
             else if (OuterVariables != null && OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, value, valueType);
             else InnerVariables.AddVariable(variableName, value, valueType);
         }

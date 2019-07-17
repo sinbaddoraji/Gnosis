@@ -59,25 +59,27 @@ namespace Gnosis
             return mathEngine.Express(expression,rt);
         }
 
-        public double ParseDoubleExpression(List<string> tokens)
+        public double ParseDoubleExpression(List<string> tokens, bool fromVariable = false)
         {
-            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
-            var rt = MathEngine.ReturnType.Double;
+            var t = fromVariable ? tokens.GetRange(3, tokens.Count - 4) : tokens;
+
+            string expression = string.Join("", t); var rt = MathEngine.ReturnType.Double;
 
             return (double)ParseNumberExpression(expression,rt);
             //var value = blah + blah + blah
         }
 
-        public float ParseFloatExpression(List<string> tokens)
+        public float ParseFloatExpression(List<string> tokens, bool fromVariable = false)
         {
-            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
-            var rt = MathEngine.ReturnType.Float;
+            var t = fromVariable ? tokens.GetRange(3, tokens.Count - 4) : tokens;
+
+            string expression = string.Join("", t); var rt = MathEngine.ReturnType.Float;
 
             return (float)ParseNumberExpression(expression, rt);
             //var value = blah + blah + blah
         }
 
-        public int ParseIntExpression(List<string> tokens)
+        public int ParseIntExpression(List<string> tokens, bool fromVariable = false)
         {
             string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
             var rt = MathEngine.ReturnType.Int;
@@ -86,19 +88,18 @@ namespace Gnosis
             //var value = blah + blah + blah
         }
 
-        public long ParseLongExpression(List<string> tokens)
+        public long ParseLongExpression(List<string> tokens, bool fromVariable = false)
         {
-            tokens.RemoveRange(0, 3);
-            tokens.RemoveAt(tokens.Count - 1);
+            var t = fromVariable ? tokens.GetRange(3, tokens.Count - 4) : tokens;
 
-            string expression = string.Join("", tokens.GetRange(3, tokens.Count - 4));
+            string expression = string.Join("", t);
             var rt = MathEngine.ReturnType.Long;
 
             return (long)ParseNumberExpression(expression, rt);
             //var value = blah + blah + blah
         }
 
-        public string ParseStringExpression(List<string> t, bool fromVariable = true)
+        public string ParseStringExpression(List<string> t, bool fromVariable = false)
         {
             List<string> tokens = fromVariable ? t.GetRange(3, t.Count - 4) : t;
             
@@ -236,11 +237,24 @@ namespace Gnosis
             {
                 return GlobalVariables.GetVariable(value).value.value;
             }
+            else if (EntryPoint.Methods.ContainsKey(value))
+            {
+                Method m = EntryPoint.Methods[value];
+                MethodHandler mh = new MethodHandler(null, m);
+                mh.DoFunction(m);
+
+                return mh.returned;
+            }
             else if(Value.IsNumber(value))
             {
                 return value;
             }
-            else return null;
+            else
+            {
+                //To be implemented
+                //Throw exception
+                return null;
+            }
         }
 
         public ValueHandler(VariableHandler oV, Method m)
