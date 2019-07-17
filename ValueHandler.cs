@@ -11,18 +11,24 @@ namespace Gnosis
     {
         //This class handles variables and raw values for the method handler
         private readonly MathEngine mathEngine = new MathEngine();
-        private VariableHandler globalVariables;
+        private VariableHandler OuterVariables;
+        public VariableHandler InnerVariables => method.lexer.Variables;
+        public VariableHandler GlobalVariables => EntryPoint.globalVariableHandler;
+
         public LogicHandler logicHandler;
+
+        
+
         private readonly Method method;
 
         public bool IsVariable(string value)
         {
-            return method.lexer.IsVariable(value) || globalVariables.IsVariable(value);
+            return GlobalVariables.IsVariable(value) || InnerVariables.IsVariable(value) || OuterVariables.IsVariable(value);
         }
 
         public bool IsArray(string value)
         {
-            return method.lexer.IsArray(value) || globalVariables.IsArray(value);
+            return GlobalVariables.IsArray(value) || InnerVariables.IsArray(value) || OuterVariables.IsArray(value);
         }
 
 
@@ -35,13 +41,17 @@ namespace Gnosis
             {
                 return Value.Value_Type.Array;
             }
-            if (method.lexer.IsVariable(value))
+            if (InnerVariables.IsVariable(value))
             {
-                return method.lexer.Variables.GetVariable(value).ValueType();
+                return InnerVariables.GetVariable(value).ValueType();
             }
-            else if (globalVariables.IsVariable(value))
+            else if (OuterVariables.IsVariable(value))
             {
-                return globalVariables.GetVariable(value).ValueType();
+                return OuterVariables.GetVariable(value).ValueType();
+            }
+            else if (GlobalVariables.IsVariable(value))
+            {
+                return GlobalVariables.GetVariable(value).ValueType();
             }
             else return Value.ValueType(value);
         }
@@ -139,13 +149,17 @@ namespace Gnosis
 
         public dynamic GetArray(string name, int index)
         {
-            if (method.lexer.IsArray(name))
+            if (InnerVariables.IsArray(name))
             {
                 return method.lexer.Variables.GetArray(name,index);
             }
-            else if (globalVariables.IsArray(name))
+            else if (OuterVariables.IsArray(name))
             {
-                return globalVariables.GetArray(name,index);
+                return OuterVariables.GetArray(name, index);
+            }
+            else if (GlobalVariables.IsArray(name))
+            {
+                return GlobalVariables.GetArray(name,index);
             }
             else if (ValueType(name) == Value.Value_Type.String)
             {
@@ -170,13 +184,17 @@ namespace Gnosis
                 if (IsArray(val))
                 {
                     List<object> _ = new List<object>();
-                    if (method.lexer.IsArray(val))
+                    if (InnerVariables.IsArray(val))
                     {
                         _ = (List<object>)method.lexer.Variables.GetVariable(val).value.value;
                     }
-                    else if (globalVariables.IsArray(val))
+                    else if (OuterVariables.IsArray(val))
                     {
-                        _ = (List<object>)globalVariables.GetVariable(val).value.value;
+                        _ = (List<object>)OuterVariables.GetVariable(val).value.value;
+                    }
+                    else if (GlobalVariables.IsArray(val))
+                    {
+                        _ = (List<object>)GlobalVariables.GetVariable(val).value.value;
                     }
                     
                     return _.Count;
@@ -208,13 +226,17 @@ namespace Gnosis
                     .Replace("\\t", "\t")
                     .Replace("\\v", "\v");
             }
-            else if (method.lexer.IsVariable(value))
+            else if (InnerVariables.IsVariable(value))
             {
                 return method.lexer.Variables.GetVariable(value).value.value;
             }
-            else if (globalVariables.IsVariable(value))
+            else if (OuterVariables.IsVariable(value))
             {
-                return globalVariables.GetVariable(value).value.value;
+                return OuterVariables.GetVariable(value).value.value;
+            }
+            else if (GlobalVariables.IsVariable(value))
+            {
+                return GlobalVariables.GetVariable(value).value.value;
             }
             else if(Value.IsNumber(value))
             {
@@ -223,9 +245,9 @@ namespace Gnosis
             else return null;
         }
 
-        public ValueHandler(VariableHandler gV, Method m)
+        public ValueHandler(VariableHandler oV, Method m)
         {
-            globalVariables = gV;
+            OuterVariables = oV;
             method = m;
 
             // Variable handler method for the math evaluator (mathengine)

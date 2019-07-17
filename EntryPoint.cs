@@ -6,17 +6,17 @@ namespace Gnosis
     class EntryPoint
     {
         public static Dictionary<string, Method> Methods;
-
+        public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Method1.gno" };
+            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Calculator1.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
             Methods = lexer.Methods;
-            VariableHandler globalVariableHandler = new VariableHandler(); // variable handler for "main"
+            globalVariableHandler = new VariableHandler(); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
 

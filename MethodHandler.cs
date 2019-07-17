@@ -5,19 +5,22 @@ namespace Gnosis
 {
     class MethodHandler
     {
-        readonly VariableHandler globalVariables;
+        readonly VariableHandler OuterVariables;
+        public VariableHandler InnerVariables => method.lexer.Variables;
+        public VariableHandler GlobalVariables => EntryPoint.globalVariableHandler;
+
         public readonly LogicHandler logicHandler;
         readonly ValueHandler valueHanlder;
         Method method; 
 
         bool IsVariable(string variableName)
         {
-            return globalVariables.IsVariable(variableName) || method.lexer.IsVariable(variableName);
+            return  GlobalVariables.IsVariable(variableName) || OuterVariables.IsVariable(variableName) || InnerVariables.IsVariable(variableName);
         }
 
         bool IsArray(string variableName)
         {
-            return globalVariables.IsArray(variableName) || method.lexer.IsArray(variableName);
+            return GlobalVariables.IsArray(variableName) || OuterVariables.IsArray(variableName) || InnerVariables.IsArray(variableName);
         }
 
 
@@ -78,7 +81,7 @@ namespace Gnosis
                 else if (EntryPoint.Methods.ContainsKey(command))
                 {
                     Method m = EntryPoint.Methods[command];
-                    MethodHandler mh = new MethodHandler(globalVariables,m);
+                    MethodHandler mh = new MethodHandler(OuterVariables,m);
                     mh.DoFunction(m);
                     
                 }
@@ -136,7 +139,7 @@ namespace Gnosis
 
             value = Console.ReadLine();
 
-            globalVariables.AddVariable(variableName,value);
+            OuterVariables.AddVariable(variableName,value);
         }
 
         private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
@@ -148,8 +151,9 @@ namespace Gnosis
 
             Array a = new Array(new Value(arr));
 
-            if (isPublic || globalVariables.IsVariable(variableName)) globalVariables.AddVariable(variableName, a);
-            else method.lexer.Variables.AddVariable(variableName, a);
+            if(isPublic) GlobalVariables.AddVariable(variableName,a);
+            else if (OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, a);
+            else InnerVariables.AddVariable(variableName, a);
         }
 
         private void SetupNormalVariable(Statement statement, string variableName, Value.Value_Type valueType, bool isPublic)
@@ -191,12 +195,9 @@ namespace Gnosis
                     break;
             }
 
-
-            if (isPublic || globalVariables.IsVariable(variableName))
-            {
-                globalVariables.AddVariable(variableName, value, valueType);
-            }
-            else method.lexer.Variables.AddVariable(variableName, value, valueType);
+            if(isPublic) GlobalVariables.AddVariable(variableName, value, valueType);
+            else if (OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, value, valueType);
+            else InnerVariables.AddVariable(variableName, value, valueType);
         }
 
         void VarDeclaration(Statement statement)
@@ -321,7 +322,7 @@ namespace Gnosis
 
             statement.internalMethod = new Method(statement.tokens.GetRange(i + 1, len));
             statement.internalVariableHandler = new VariableHandler();
-            statement.internalMethodHandler = new MethodHandler(globalVariables, statement.internalMethod);
+            statement.internalMethodHandler = new MethodHandler(InnerVariables, statement.internalMethod);
 
             while (logicHandler.IntepreteBoolExpression(boolTokens))
             {
@@ -361,7 +362,7 @@ namespace Gnosis
             int len = statement.tokens.Count - (i + 1); // token count
             statement.internalMethod = new Method(statement.tokens.GetRange(i + 1, len));
             statement.internalVariableHandler = new VariableHandler();
-            statement.internalMethodHandler = new MethodHandler(globalVariables, statement.internalMethod);
+            statement.internalMethodHandler = new MethodHandler(InnerVariables, statement.internalMethod);
 
 
             //Get the three parts of for statement
@@ -375,12 +376,12 @@ namespace Gnosis
             }
         }
 
-        public MethodHandler(VariableHandler globalVars, Method m)
+        public MethodHandler(VariableHandler outerVariables, Method m)
         {
             method = m;
-            globalVariables = globalVars;
+            OuterVariables = outerVariables;
 
-            valueHanlder = new ValueHandler(globalVariables, method);
+            valueHanlder = new ValueHandler(OuterVariables, method);
             logicHandler = new LogicHandler(valueHanlder);
 
             valueHanlder.logicHandler = logicHandler;
