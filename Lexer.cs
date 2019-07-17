@@ -97,7 +97,7 @@ namespace Gnosis
                     if (code[codeIndex] == '"' && code[codeIndex - 1] != '\\')
                     {
                         codeIndex++;
-                        return output;
+                        return output.Replace("\\\"","\"");
                     }
                     codeIndex++;
                 }
