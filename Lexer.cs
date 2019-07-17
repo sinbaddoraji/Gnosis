@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Gnosis
 {
@@ -40,7 +41,7 @@ namespace Gnosis
         };
         private readonly string[] doubleOperators = new string[]
         {
-            "++","--","+=","-=","*=","/=","!=","==", "<<",">>","||","&&"
+            "++","--","+=","-=","*=","/=","!=","==", "<<",">>","||","&&", "//"
         };
 
         public Method MainMethod() => Methods["main"];
@@ -101,6 +102,10 @@ namespace Gnosis
                     }
                     codeIndex++;
                 }
+            }
+            else if(output == "//")
+            {
+                while(code[codeIndex] != '\n') codeIndex++;
             }
             else
             {
@@ -238,7 +243,6 @@ namespace Gnosis
         public Lexer(string codeText, bool _ = true)
         {
             code = codeText;
-
             if (_)
             {
                 Methods = ExtractMethods(); // Extract methods

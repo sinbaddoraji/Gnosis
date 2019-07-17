@@ -3,4 +3,6 @@ array remove at
 array insert at
 array[index] = value
 
-Method call
+implement comments
+
+Syntax : \\mfkmrfmrkmfmrkm\\
