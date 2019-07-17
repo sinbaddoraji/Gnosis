@@ -27,7 +27,7 @@ namespace Gnosis
 
         private readonly string[] keywords = new string[]
         {
-            "print", "input", "var","pause", "let", "public"
+            "print", "input", "var","pause", "let", "public", "pause"
         };
 
         private readonly string[] conditionalKeywords = new string[]
@@ -57,7 +57,7 @@ namespace Gnosis
 
         private bool IsSymbol(string str) => operators.Contains(str) || doubleOperators.Contains(str);
 
-        private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str) || Methods.ContainsKey(str);
+        private bool IsKeyword(string str) => keywords.Contains(str) || conditionalKeywords.Contains(str);
 
         public bool Eof
         {
@@ -125,13 +125,13 @@ namespace Gnosis
 
                 string next = NextBit();
 
-                if (IsSymbol(next))
+                if (IsSymbol(next) && cur != "")
                 {
                     statementOutput.Add(cur);
                     cur = "";
                 }
 
-                if (next == null) return null;
+                if (next == "") continue;
                 else cur += next;
 
                 if (IsVariable(cur) || IsString(cur) || IsSymbol(cur) || IsKeyword(cur)) return cur;
@@ -153,6 +153,12 @@ namespace Gnosis
             while (true)
             {
                 if (Eof) break;
+
+                if(!bracket && cur == ";")
+                {
+                    statementOutput.Add(cur);
+                    break;
+                }
 
                 if (cur != "")
                 {

@@ -1,0 +1,6 @@
+Add array values using += { }
+array remove at
+array insert at
+array[index] = value
+
+Method call

@@ -31,7 +31,6 @@ namespace Gnosis
                 var statement = this.method.lot[i];
                 IntepreteCommand(statement);
             }
-                
         }
 
         private void CleanForArray(Statement statement)
