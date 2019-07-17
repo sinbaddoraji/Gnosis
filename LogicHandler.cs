@@ -36,9 +36,12 @@ namespace Gnosis
             // -> false || true -> true (Desired use)
             List<string> values = new List<string>();
 
+            int i = 1;
+            if(tokens[0] == "(") i++;
+
             //Compare numbers using default number value type (double)
 
-            for (int i = 1; i < tokens.Length; i += 2)
+            for (; i < tokens.Length; i += 2)
             {
                 if (comparer.Contains(tokens[i]))
                 {

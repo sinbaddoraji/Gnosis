@@ -76,7 +76,7 @@ namespace Gnosis
                 var valueType = valueHanlder.ValueType(statement.tokens[1]);
                 int lem = statement.tokens.Count;
 
-                returned = ExpressStatement(statement.tokens.GetRange(0,lem),valueType, false);
+                returned = ExpressStatement(statement.tokens.GetRange(1,lem - 2),valueType, false);
                 return;
             }
             else if (IsVariable(statement.tokens[0])) ShortHandStatement(statement);
@@ -124,10 +124,13 @@ namespace Gnosis
         void Input(Statement statement)
         {
             //input >> variable;
-            //input "Display string" >> variable;
+            //input public >> variable;
+            //input "Display string" >> variable
+            //input public "Display string" >> variable;
 
             string variableName;
             string value;
+            bool isPublic = false;
 
             if (statement.tokens.Count == 4)
             {
@@ -137,10 +140,27 @@ namespace Gnosis
             else if (statement.tokens.Count == 5)
             {
                 //if input has a display message
-                string display = statement.tokens[1];
-                Console.Write(display.Substring(1, display.Length -2));
+                if(statement.tokens[1] == "public")
+                {
+                    variableName = statement.tokens[3];
+                    isPublic = true;
+                }
+                else
+                {
+                    string display = statement.tokens[1];
+                    Console.Write(display.Substring(1, display.Length - 2));
 
-                variableName = statement.tokens[3];
+                    variableName = statement.tokens[3];
+                }
+            }
+            else if (statement.tokens.Count == 6)
+            {
+                //if input is public var
+                isPublic = true;
+                string display = statement.tokens[2];
+                Console.Write(display.Substring(1, display.Length - 2));
+
+                variableName = statement.tokens[4];
             }
             else
             {
@@ -151,7 +171,14 @@ namespace Gnosis
 
             value = Console.ReadLine();
 
-            InnerVariables.AddVariable(variableName,value);
+            if (isPublic)
+            {
+                GlobalVariables.AddVariable(variableName,value);
+            }
+            else
+            {
+                InnerVariables.AddVariable(variableName,value);
+            }
         }
 
         private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
