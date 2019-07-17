@@ -8,9 +8,42 @@ namespace Gnosis
 {
     class VariableHandler
     {
-        public readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+        public VariableHandler OuterVariables;
 
-        public bool IsVariable(string variable) => variables.ContainsKey(variable);
+        private readonly Dictionary<string, Variable> variables = new Dictionary<string, Variable>();
+
+        public bool IsLocalVariable(string variable)
+        {
+            return variables.ContainsKey(variable);
+        }
+
+        public bool IsVariable(string variable)
+        {
+            VariableHandler cur = this;
+            if(variables.ContainsKey(variable)) return true;
+
+            while (true && cur.OuterVariables != null)
+            {
+                if (cur.OuterVariables.IsLocalVariable(variable)) return true;
+                cur = cur.OuterVariables;
+            }
+
+           return false;
+        }
+
+        public VariableHandler GetVariableHandler(string variable)
+        {
+            VariableHandler cur = this;
+            if (variables.ContainsKey(variable)) return cur;
+
+            while (true && cur.OuterVariables != null)
+            {
+                if (cur.OuterVariables.IsLocalVariable(variable)) return cur;
+                cur = cur.OuterVariables;
+            }
+
+            return null;
+        }
 
         public bool IsArray(string variable)
         {
@@ -39,22 +72,19 @@ namespace Gnosis
             return val;
         }
 
-        public void InheritVariables(Dictionary<string, Variable> variables)
+        public void RawAddVariable(string name, Variable v)
         {
-
-        }
-
-        public void AddVariable(string name, Variable v)
-        {
-            //If variables contains variable with "name"
-            //      edit the variable
-            //else 
-            //      add variable
-
             if (variables.ContainsKey(name))
                 variables[name] = v;
             else
                 variables.Add(name, v);
+        }
+
+        public void AddVariable(string name, Variable v)
+        {
+            VariableHandler vh = GetVariableHandler(name);
+            if(vh != null) vh.RawAddVariable(name, v);
+            else RawAddVariable(name, v);
         }
 
         public void AddVariable(string name, string value)
@@ -69,7 +99,23 @@ namespace Gnosis
             AddVariable(name, v);
         }
 
-        public Variable GetVariable(string name) => variables[name];
+        public Variable GetLocalVariable(string name)
+        {
+            return variables[name];
+        }
+
+        public Variable GetVariable(string name)
+        {
+            VariableHandler cur = this;
+
+            while (true && cur.OuterVariables != null)
+            {
+                if (cur.OuterVariables.IsLocalVariable(name)) 
+                    return cur.OuterVariables.GetLocalVariable(name);
+                cur = cur.OuterVariables;
+            }
+            return variables[name];
+        }
 
         public dynamic GetArray(string name, int index)
         {

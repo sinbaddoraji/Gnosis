@@ -385,6 +385,8 @@ namespace Gnosis
             logicHandler = new LogicHandler(valueHanlder);
 
             valueHanlder.logicHandler = logicHandler;
+
+            InnerVariables.OuterVariables = outerVariables;
         }
     }
 }

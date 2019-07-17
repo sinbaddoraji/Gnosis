@@ -17,8 +17,6 @@ namespace Gnosis
 
         public LogicHandler logicHandler;
 
-        
-
         private readonly Method method;
 
         public bool IsVariable(string value)
