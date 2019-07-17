@@ -43,7 +43,7 @@ namespace Gnosis
             {
                 return InnerVariables.GetVariable(value).ValueType();
             }
-            else if (OuterVariables.IsVariable(value))
+            else if (OuterVariables != null && OuterVariables.IsVariable(value))
             {
                 return OuterVariables.GetVariable(value).ValueType();
             }
@@ -228,7 +228,7 @@ namespace Gnosis
             {
                 return method.lexer.Variables.GetVariable(value).value.value;
             }
-            else if (OuterVariables.IsVariable(value))
+            else if (OuterVariables != null && OuterVariables.IsVariable(value))
             {
                 return OuterVariables.GetVariable(value).value.value;
             }

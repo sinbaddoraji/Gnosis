@@ -9,7 +9,7 @@ namespace Gnosis
         public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Calculator2.gno" };
+            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Array.gno" };
 
             if(args.Length == 0)
                 return; //exit program if no arguments
@@ -21,10 +21,10 @@ namespace Gnosis
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
 
             //Make public and private variableHandler for "main" the same 
-            lexer.MainMethod().lexer.Variables = new VariableHandler(); 
+            VariableHandler mainVh = lexer.MainMethod().lexer.Variables; 
 
             // Create intepreter instance
-            MethodHandler methodHandler = new MethodHandler(globalVariableHandler, mainMethod); 
+            MethodHandler methodHandler = new MethodHandler(null, mainMethod); 
 
             if (mainMethod != null)
                  methodHandler.DoFunction(mainMethod); // Inteprete commands in Main

@@ -15,12 +15,12 @@ namespace Gnosis
 
         bool IsVariable(string variableName)
         {
-            return  GlobalVariables.IsVariable(variableName) || OuterVariables.IsVariable(variableName) || InnerVariables.IsVariable(variableName);
+            return  GlobalVariables.IsVariable(variableName) || (OuterVariables != null && OuterVariables.IsVariable(variableName)) || InnerVariables.IsVariable(variableName);
         }
 
         bool IsArray(string variableName)
         {
-            return GlobalVariables.IsArray(variableName) || OuterVariables.IsArray(variableName) || InnerVariables.IsArray(variableName);
+            return GlobalVariables.IsArray(variableName) || (OuterVariables != null && OuterVariables.IsArray(variableName)) || InnerVariables.IsArray(variableName);
         }
 
 
@@ -139,7 +139,7 @@ namespace Gnosis
 
             value = Console.ReadLine();
 
-            OuterVariables.AddVariable(variableName,value);
+            InnerVariables.AddVariable(variableName,value);
         }
 
         private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
@@ -152,7 +152,7 @@ namespace Gnosis
             Array a = new Array(new Value(arr));
 
             if(isPublic) GlobalVariables.AddVariable(variableName,a);
-            else if (OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, a);
+            else if (OuterVariables != null && OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, a);
             else InnerVariables.AddVariable(variableName, a);
         }
 
@@ -196,7 +196,7 @@ namespace Gnosis
             }
 
             if(isPublic) GlobalVariables.AddVariable(variableName, value, valueType);
-            else if (OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, value, valueType);
+            else if (OuterVariables != null && OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, value, valueType);
             else InnerVariables.AddVariable(variableName, value, valueType);
         }
 
