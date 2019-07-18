@@ -9,9 +9,9 @@ namespace Gnosis
         public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\bin\Debug\Example Scripts\Calculator3.gno" };
+            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\Example Scripts\array.gno" };
 
-            if(args.Length == 0)
+            if (args.Length == 0)
                 return; //exit program if no arguments
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file

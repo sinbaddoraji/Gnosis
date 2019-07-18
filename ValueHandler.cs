@@ -35,7 +35,7 @@ namespace Gnosis
             //Find out if checking variable
             //if checking variable return variable value type
             //else return variable type
-            if (value == "{")
+            if (value == "{" || IsArray(value))
             {
                 return Value.Value_Type.Array;
             }

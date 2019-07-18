@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Gnosis
 {
@@ -184,12 +185,19 @@ namespace Gnosis
         private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
         {
             List<dynamic> arr = new List<dynamic>();
+            //{"air", "fire", "earth", "water"} + { "ether", "you"};
+            //"air" "fire" "earth" "water" "ether" "you";
+            //element + {"ether", "you"}
 
-            for (int i = 4; i < statement.tokens.IndexOf("}"); i += 2)
-                arr.Add(valueHanlder.GetValue(statement.tokens[i]));
+            var rawArr = statement.tokens.GetRange(3,statement.tokens.Count - 3).Where(x=> !new[]{ "{", "}", ",", "+" }.Contains(x)).ToList();
+            for (int i = 0; i < rawArr.Count(); i++)
+            {
+                if (IsArray(rawArr[i])) arr.AddRange((List<object>)valueHanlder.GetValue(rawArr[i]));
+                else arr.Add(valueHanlder.GetValue(rawArr[i]));
+            }
 
             Array a = new Array(new Value(arr));
-
+            
             if(isPublic) GlobalVariables.AddVariable(variableName,a);
             else if (OuterVariables != null && OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, a);
             else InnerVariables.AddVariable(variableName, a);
