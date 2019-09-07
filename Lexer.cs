@@ -84,6 +84,8 @@ namespace Gnosis
                 return output;
             }
 
+            while (char.IsWhiteSpace(code[codeIndex])) codeIndex++;
+
             output = code[codeIndex].ToString();
             codeIndex++;
 
@@ -117,7 +119,7 @@ namespace Gnosis
                 }
             }
 
-            return output.Trim();
+            return output;
         }
 
         private string NextKeyword()

@@ -124,11 +124,13 @@ namespace Gnosis
             return array.GetValue(index);
         }
 
-        public VariableHandler()
+        public VariableHandler(bool isGlobal = false)
         {
+            if(isGlobal == false) return;
             variables.Add("endl", new Variable("\n", true));
             variables.Add("true", new Variable(new Value(true)));
             variables.Add("false", new Variable(new Value(false)));
+            variables.Add("args", new Variable(new Value(Environment.GetCommandLineArgs())));
         }
     }
 }

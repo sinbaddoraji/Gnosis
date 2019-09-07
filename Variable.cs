@@ -23,8 +23,13 @@ namespace Gnosis
 
     class Array : Variable
     {
-        public Array(Value value) : base(value) => IsArray = true;
+        public Array(Value value) : base(value)
+        {
+            IsArray = true;
+        }
 
         public dynamic GetValue(int index) => ((List<object>)value.value)[index];
+
+        public void SetValue(object val, int index) => ((List<object>)value.value)[index] = val;
     }
 }

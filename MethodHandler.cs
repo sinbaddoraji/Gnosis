@@ -25,6 +25,23 @@ namespace Gnosis
             return GlobalVariables.IsArray(variableName) || (OuterVariables != null && OuterVariables.IsArray(variableName)) || InnerVariables.IsArray(variableName);
         }
 
+        bool IsArrayPointer(string value) => IsArray(value.Split('[')[0]);
+
+        int NextIndexOfBracket(Statement statement, int currentIndex)
+        {
+            //currentIndex => index of '['
+
+            int isOpen = 0; //bracket is open
+
+            for (int i = currentIndex; i < statement.tokens.Count; i++)
+            {
+                if (statement.tokens[i] == "[") isOpen++;
+                if (statement.tokens[i] == "]") isOpen--;
+                if (isOpen == 0) return i;
+            }
+            return 0;
+        }
+
 
         public void DoFunction(Method method)
         {
@@ -43,16 +60,21 @@ namespace Gnosis
         {
             while (statement.tokens.Contains("[") && statement.tokens.Contains("]"))
             {
+                int start, end;
+
                 for (int i = 0; i < statement.tokens.Count; i++)
                 {
                     //elements [ 0 ]
                     if (IsArray(statement.tokens[i]))
                     {
                         //i+1,i+3
-                        statement.tokens[i] += statement.tokens[i + 1];
-                        statement.tokens[i] += statement.tokens[i + 2];
-                        statement.tokens[i] += statement.tokens[i + 3];
-                        statement.tokens.RemoveRange(i + 1, 3);
+                        start = statement.tokens.IndexOf("[",i);
+                        end = NextIndexOfBracket(statement,start);
+
+                        for (int k = start; k <= end; k++)
+                            statement.tokens[i] += statement.tokens[k];
+
+                        statement.tokens.RemoveRange(start, end - start + 1);
                         break;
                     }
                 }
@@ -81,6 +103,7 @@ namespace Gnosis
                 return;
             }
             else if (IsVariable(statement.tokens[0])) ShortHandStatement(statement);
+            else if (IsArrayPointer(statement.tokens[0])) ArrayValueChangeStatement(statement);
             else if (statement.tokens.Count == 2)
             {
                 //If single statement like "pause"
@@ -185,19 +208,21 @@ namespace Gnosis
         private void SetupArrayVariable(Statement statement, string variableName, bool isPublic)
         {
             List<dynamic> arr = new List<dynamic>();
-            //{"air", "fire", "earth", "water"} + { "ether", "you"};
-            //"air" "fire" "earth" "water" "ether" "you";
-            //element + {"ether", "you"}
 
-            var rawArr = statement.tokens.GetRange(3,statement.tokens.Count - 3).Where(x=> !new[]{ "{", "}", ",", "+" }.Contains(x)).ToList();
-            for (int i = 0; i < rawArr.Count(); i++)
+            var bList = new[] { "{", "}", ",", "+" };
+
+            for (int i = 3; i < statement.tokens.Count; i++)
             {
-                if (IsArray(rawArr[i])) arr.AddRange((List<object>)valueHanlder.GetValue(rawArr[i]));
-                else arr.Add(valueHanlder.GetValue(rawArr[i]));
+                var cur = statement.tokens[i];
+                if(!bList.Contains(cur))
+                {
+                    if (IsArray(cur)) arr.AddRange((List<object>)valueHanlder.GetValue(cur));
+                    else arr.Add(valueHanlder.GetValue(cur));
+                }
             }
 
-            Array a = new Array(new Value(arr));
-            
+            Array a = new Array(new Value(arr, VariableHandler.ProcessedValue(Convert.ToString(arr[0])).type));
+
             if(isPublic) GlobalVariables.AddVariable(variableName,a);
             else if (OuterVariables != null && OuterVariables.IsVariable(variableName)) OuterVariables.AddVariable(variableName, a);
             else InnerVariables.AddVariable(variableName, a);
@@ -299,6 +324,47 @@ namespace Gnosis
             else 
                 SetupNormalVariable(statement, variableName, valueType, isPublic);
 
+        }
+        
+        void ArrayValueChangeStatement(Statement statement)
+        {
+            //elements[$elements-1] = "Nothing else";
+            string variableName = statement.tokens[0].Split('[')[0];
+
+            int indexOfVName = statement.tokens[0].IndexOf(variableName) + variableName.Length + 1;
+            int indexOfLastBrack = statement.tokens[0].LastIndexOf(']');
+
+            string pointerIndex = statement.tokens[0].Substring(indexOfVName,indexOfLastBrack - indexOfVName);
+            int pointerIndexInt = (int)valueHanlder.ParseNumberExpression(pointerIndex,Math.MathEngine.ReturnType.Int);
+
+            Array arr = null;
+            if (InnerVariables.IsArray(variableName))
+            {
+                arr = (Array)InnerVariables.GetVariable(variableName);
+               
+            }
+            else if (OuterVariables.IsArray(variableName))
+            {
+                arr = (Array)OuterVariables.GetVariable(variableName);
+            }
+            else if (GlobalVariables.IsArray(variableName))
+            {
+                arr = (Array)GlobalVariables.GetVariable(variableName);
+            }
+            else
+            {
+                //Throw
+                //To be implemented
+            }
+            
+            List<string> internalTokens = new List<string>();
+            for (int i = 2; i < statement.tokens.Count -1; i++)
+            {
+                internalTokens.Add(statement.tokens[i]);
+            }
+
+            dynamic value = valueHanlder.ParseStringExpression(internalTokens, false);
+            arr.SetValue(value,pointerIndexInt);
         }
 
         void ShortHandStatement(Statement statement)

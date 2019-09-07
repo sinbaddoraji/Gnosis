@@ -9,14 +9,14 @@ namespace Gnosis
         public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\Example Scripts\array.gno" };
+            //args = new[] { @"C:\Users\Sage\Desktop\Gnosis\Gnosis\Example Scripts\array.gno" };
 
             if (args.Length == 0)
                 return; //exit program if no arguments
 
             Lexer lexer = new Lexer(File.ReadAllText(args[0])); // Get tokens from code file
             Methods = lexer.Methods;
-            globalVariableHandler = new VariableHandler(); // variable handler for "main"
+            globalVariableHandler = new VariableHandler(true); // variable handler for "main"
 
             Method mainMethod = lexer.MainMethod(); // Main method (entry point "main")
 

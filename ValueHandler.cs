@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Math;
 
@@ -26,7 +27,7 @@ namespace Gnosis
 
         public bool IsArray(string value)
         {
-            return GlobalVariables.IsArray(value) || InnerVariables.IsArray(value) || OuterVariables.IsArray(value);
+            return GlobalVariables.IsArray(value) || InnerVariables.IsArray(value) || (OuterVariables != null && OuterVariables.IsArray(value));
         }
 
 
@@ -56,6 +57,16 @@ namespace Gnosis
 
         public dynamic ParseNumberExpression(string expression, MathEngine.ReturnType rt)
         {
+            if (expression == "")
+            {
+                //Throw
+                //return null;
+            }
+
+            foreach(Match m in Regex.Matches(expression, @"\$\w+"))
+            {
+                expression = expression.Replace(m.Value,Convert.ToString(GetValue(m.Value)));
+            }
             return mathEngine.Express(expression,rt);
         }
 
