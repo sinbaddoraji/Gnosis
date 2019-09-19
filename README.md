@@ -40,6 +40,7 @@ input:
 		input >> variable;
 		print << variable << endl;
 		input "Tell me something: " >> variable;
+		input public >> somethingElse;
 		print << variable << endl;
         </main>
 	
