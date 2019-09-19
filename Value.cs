@@ -23,7 +23,11 @@ namespace Gnosis
 
         public static bool IsBool(string val) => bool.TryParse(val, out bool b);
 
-        public static bool IsString(string val) => val.StartsWith("\"") && val.EndsWith("\"");
+        public static bool IsString(string val)
+        {
+            if (val == null) return false;
+            return val.StartsWith("\"") && val.EndsWith("\"");
+        }
 
         public static bool IsNumber(string val)
         {

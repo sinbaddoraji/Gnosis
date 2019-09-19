@@ -163,7 +163,7 @@ namespace Gnosis
             {
                 return method.lexer.Variables.GetArray(name,index);
             }
-            else if (OuterVariables.IsArray(name))
+            else if (OuterVariables != null && OuterVariables.IsArray(name))
             {
                 return OuterVariables.GetArray(name, index);
             }
