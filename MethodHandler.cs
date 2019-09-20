@@ -93,7 +93,6 @@ namespace Gnosis
             else if (statement.tokens[0] == "if") IfStatement(statement, false);
             else if (statement.tokens[0] == "while") IfStatement(statement, true);
             else if (statement.tokens[0] == "for") ForStatement(statement);
-            else if (statement.tokens[0] == "for") ForStatement(statement);
             else if (statement.tokens[0] == "return")
             {
                 var valueType = valueHanlder.ValueType(statement.tokens[1]);
@@ -209,8 +208,9 @@ namespace Gnosis
         {
             List<dynamic> arr = new List<dynamic>();
 
-            var bList = new[] { "{", "}", ",", "+" };
+            if (isPublic) statement.tokens.RemoveAt(1);
 
+            var bList = new[] { "{", "}", ",", "+" };
             for (int i = 3; i < statement.tokens.Count; i++)
             {
                 var cur = statement.tokens[i];
@@ -283,7 +283,7 @@ namespace Gnosis
         void VarDeclaration(Statement statement)
         {
             //Variable type will be based on the first variable in statement (tokens[3])
-            string variableName;;
+            string variableName;
             Value.Value_Type valueType; 
 
             bool isPublic = false;
@@ -402,7 +402,10 @@ namespace Gnosis
             IntepreteCommand(statement);
         }
 
-        void PrepareConditionalStatement(ref Statement statement,out string[] boolTokens, out int i)
+        #region Statement
+
+
+        void PrepareConditionalStatement(ref Statement statement, out string[] boolTokens, out int i)
         {
             //if (value == 15 && value == 16)
             int boolStart = 2, boolEnd = 2;
@@ -448,7 +451,7 @@ namespace Gnosis
             while (logicHandler.IntepreteBoolExpression(boolTokens))
             {
                 statement.RunStatement();
-                if(whileLoop == false) break; // is if statement
+                if (whileLoop == false) break; // is if statement
                 // else continue as while statement
             }
         }
@@ -463,9 +466,9 @@ namespace Gnosis
 
             for (int j = 0; j < forRunTokens.Length; j++)
             {
-                if(forRunTokens[j] == "|" || j == forRunTokens.Length - 1)
+                if (forRunTokens[j] == "|" || j == forRunTokens.Length - 1)
                 {
-                    if(j == forRunTokens.Length - 1) 
+                    if (j == forRunTokens.Length - 1)
                         current.Add(forRunTokens[j]);
 
                     if (forRunTokens[j] == "|")
@@ -496,6 +499,9 @@ namespace Gnosis
                 statement.internalMethodHandler.IntepreteCommand(new Statement(tT[2])); //Run last part.. eg i++
             }
         }
+
+
+        #endregion
 
         public MethodHandler(VariableHandler outerVariables, Method m)
         {

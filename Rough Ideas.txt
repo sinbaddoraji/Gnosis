@@ -15,3 +15,5 @@ methods in Main are global and can be accessed in every method but not vice vers
 except variable created by using var public
 
 comments end with ; when between code statements
+
+note: do not name method with words containing keywords

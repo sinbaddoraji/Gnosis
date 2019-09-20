@@ -9,7 +9,8 @@ namespace Gnosis
         public static VariableHandler globalVariableHandler;
         static void Main(string[] args)
         {
-            //args = new[] { @"C:\Users\osina\source\repos\Gnosis\Example Scripts\XnO.gno" };
+            //
+           // args = new[] { @"C:\Users\osina\source\repos\Gnosis\Example Scripts\XnO.gno" };
 
             if (args.Length == 0)
                 return; //exit program if no arguments
