@@ -107,6 +107,10 @@ namespace Gnosis
             {
                 //If single statement like "pause"
                 string command = statement.tokens[0];
+                if (command == "cls")
+                {
+                    Console.Clear();
+                }
                 if (command == "pause")
                 {
                     Console.WriteLine("Press any key to continue...");
@@ -374,6 +378,9 @@ namespace Gnosis
 
             statement.tokens.Insert(0, "var");
             string variableName = statement.tokens[1];
+
+            if(GlobalVariables.IsVariable(variableName))
+                 statement.tokens.Insert(1, "public");
 
             //i++
             //var i ++
