@@ -9,8 +9,9 @@ namespace Gnosis
     class Method
     {
         public List<Statement> lot = new List<Statement>();
-        public Lexer lexer;
-        //private method variables -> lexer.variables
+        public VariableHandler Variables => lexer.Variables;
+
+        private Lexer lexer;
 
 
         private void GetStatements()
@@ -32,6 +33,16 @@ namespace Gnosis
         {
             lexer = new Lexer(statement);
             GetStatements();
+        }
+
+        public dynamic GetArray(string name, int index)
+        {
+            return Variables.GetArray(name, index);
+        }
+
+        public Variable GetVariable(string name)
+        {
+            return Variables.GetVariable(name);
         }
     }
 }

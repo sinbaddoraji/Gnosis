@@ -245,10 +245,7 @@ namespace Gnosis
         public Lexer(string codeText, bool _ = true)
         {
             code = codeText;
-            if (_)
-            {
-                Methods = ExtractMethods(); // Extract methods
-            }
+            if (_) Methods = ExtractMethods(); // Extract methods
             else _ = false;
         }
 

@@ -1,6 +1,5 @@
-Add array values using += { }
-array remove at
-array insert at
+array remove at => removeAt(array,index)
+array insert at => insertAt(array,index,value)
 array[index] = value
 
 implement comments

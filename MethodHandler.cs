@@ -7,7 +7,7 @@ namespace Gnosis
     class MethodHandler
     {
         readonly VariableHandler OuterVariables;
-        public VariableHandler InnerVariables => method.lexer.Variables;
+        public VariableHandler InnerVariables => method.Variables;
         public VariableHandler GlobalVariables => EntryPoint.globalVariableHandler;
 
         public readonly LogicHandler logicHandler;
@@ -212,10 +212,9 @@ namespace Gnosis
         {
             List<dynamic> arr = new List<dynamic>();
 
-            if (isPublic) statement.tokens.RemoveAt(1);
-
             var bList = new[] { "{", "}", ",", "+" };
-            for (int i = 3; i < statement.tokens.Count; i++)
+
+            for (int i = isPublic ? 4 : 3; i < statement.tokens.Count; i++)
             {
                 var cur = statement.tokens[i];
                 if(!bList.Contains(cur))
@@ -379,8 +378,8 @@ namespace Gnosis
             statement.tokens.Insert(0, "var");
             string variableName = statement.tokens[1];
 
-            if(GlobalVariables.IsVariable(variableName))
-                 statement.tokens.Insert(1, "public");
+            bool isPublic = GlobalVariables.IsVariable(variableName);
+            if (isPublic) statement.tokens.Insert(1, "public");
 
             //i++
             //var i ++
@@ -389,6 +388,7 @@ namespace Gnosis
             {
                 case "=":
                     //Do nothing
+
                     break;
 
                 case "+=":
@@ -405,7 +405,9 @@ namespace Gnosis
                     break;
             }
 
-            statement.tokens[2] = "=";
+            int equIndex = isPublic ? 3 : 2;
+            statement.tokens[equIndex] = "=";
+
             IntepreteCommand(statement);
         }
 
@@ -414,7 +416,6 @@ namespace Gnosis
 
         void PrepareConditionalStatement(ref Statement statement, out string[] boolTokens, out int i)
         {
-            //if (value == 15 && value == 16)
             int boolStart = 2, boolEnd = 2;
 
             int openedBrackets = 0;

@@ -13,7 +13,7 @@ namespace Gnosis
         //This class handles variables and raw values for the method handler
         private readonly MathEngine mathEngine = new MathEngine();
         private VariableHandler OuterVariables;
-        public VariableHandler InnerVariables => method.lexer.Variables;
+        public VariableHandler InnerVariables => method.Variables;
         public VariableHandler GlobalVariables => EntryPoint.globalVariableHandler;
 
         public LogicHandler logicHandler;
@@ -161,7 +161,7 @@ namespace Gnosis
         {
             if (InnerVariables.IsArray(name))
             {
-                return method.lexer.Variables.GetArray(name,index);
+                return method.GetArray(name,index);
             }
             else if (OuterVariables != null && OuterVariables.IsArray(name))
             {
@@ -196,7 +196,7 @@ namespace Gnosis
                     List<object> _ = new List<object>();
                     if (InnerVariables.IsArray(val))
                     {
-                        _ = (List<object>)method.lexer.Variables.GetVariable(val).value.value;
+                        _ = (List<object>)method.GetVariable(val).value.value;
                     }
                     else if (OuterVariables.IsArray(val))
                     {
@@ -238,7 +238,7 @@ namespace Gnosis
             }
             else if (InnerVariables.IsVariable(value))
             {
-                return method.lexer.Variables.GetVariable(value).value.value;
+                return method.GetVariable(value).value.value;
             }
             else if (OuterVariables != null && OuterVariables.IsVariable(value))
             {

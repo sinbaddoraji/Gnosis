@@ -24,7 +24,7 @@
 	print << "Choice : ";
 	input >> input;
 	
-	if (input < 9 && input > 0)
+	if (input < 10 && input > 0)
 	{
 		cells[input-1] = player;
 	};
@@ -33,12 +33,15 @@
 	
 	if (player == "X")
 	{
-		var public player = "O";
+		player = "O";
+			
 		played = 1;
 	};
 	
 	if (player == "O" && played == 0)
 	{
-		var public player = "X";
+		player = "X";
+			
+		played = 0;
 	};
 </getInp>
