@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gnosis", "Gnosis.csproj", "{952E2FAA-C645-4C02-9990-4B8A3646818B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathEngine", "MathEngine\MathEngine.csproj", "{F767FC41-D5EE-4488-BE26-45893E50E781}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MathEngine", "MathEngine\MathEngine\MathEngine.csproj", "{F767FC41-D5EE-4488-BE26-45893E50E781}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "MathEngine\Tester\Tester.csproj", "{DA9675DD-B170-46A4-98D2-424A8D59F6AF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tester", "Tester\Tester.csproj", "{DA9675DD-B170-46A4-98D2-424A8D59F6AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,10 +13,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{952E2FAA-C645-4C02-9990-4B8A3646818B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{952E2FAA-C645-4C02-9990-4B8A3646818B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{952E2FAA-C645-4C02-9990-4B8A3646818B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{952E2FAA-C645-4C02-9990-4B8A3646818B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F767FC41-D5EE-4488-BE26-45893E50E781}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F767FC41-D5EE-4488-BE26-45893E50E781}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F767FC41-D5EE-4488-BE26-45893E50E781}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -32,6 +26,6 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {FDC12163-3082-4A81-AAF9-EF8743E219B5}
+		SolutionGuid = {1AAAE156-B621-48A0-9449-26118240E14C}
 	EndGlobalSection
 EndGlobal
